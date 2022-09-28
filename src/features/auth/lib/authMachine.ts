@@ -267,7 +267,10 @@ export const authMachine = createMachine<
                   metamask.getFarm()?.getTotalSupply(),
                   metamask.getFarmMinter().getMaxSupply(),
                 ]);
-
+                console.log("checkingSupply -[totalSupply, maxSupply]：", [
+                  totalSupply,
+                  maxSupply,
+                ]);
                 return {
                   totalSupply,
                   maxSupply,
@@ -519,8 +522,11 @@ export const authMachine = createMachine<
       },
       loadFarm: async (context): Promise<Farm | undefined> => {
         const farmAccounts = await metamask.getFarm()?.getFarms();
+        console.log("i am in ladFarm -farmAccounts:", farmAccounts);
 
         if (farmAccounts?.length === 0) {
+          console.log("i am in ladFarm -farmAccounts:", 0);
+
           return;
         }
 
@@ -530,12 +536,12 @@ export const authMachine = createMachine<
 
         // V1 just support 1 farm per account - in future let them choose between the NFTs they hold
         const farmAccount = farmAccounts[0];
-
+        console.log(farmAccount);
         const { isBanned, verificationUrl } = await loadBanDetails(
           farmAccount.tokenId,
           context.rawToken as string
         );
-        console.log({ isBanned });
+        console.log({ isBanned, verificationUrl });
 
         return {
           farmId: farmAccount.tokenId,
@@ -547,7 +553,11 @@ export const authMachine = createMachine<
       },
       createFarm: async (context: Context, event: any): Promise<Context> => {
         const { charityAddress, donation, captcha } = event as CreateFarmEvent;
-
+        console.log("i am in createFarm - charityAddress, donation, captcha ", {
+          charityAddress,
+          donation,
+          captcha,
+        });
         const newFarm = await createFarmAction({
           charity: charityAddress,
           token: context.rawToken as string,
@@ -561,7 +571,6 @@ export const authMachine = createMachine<
       },
       login: async (): Promise<{ token: string }> => {
         const { token } = await login();
-
         return {
           token,
         };

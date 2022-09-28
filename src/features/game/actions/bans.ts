@@ -6,6 +6,7 @@ export async function loadBanDetails(
   id: number,
   token: string
 ): Promise<{ isBanned: boolean; verificationUrl: string }> {
+  //去获取这个农场的元数据文件
   // Go and fetch the metadata file for this farm
   const url = `${API_URL}/bans/${id}`;
   const response = await window.fetch(url, {
@@ -16,8 +17,9 @@ export async function loadBanDetails(
     },
   });
 
-  const data = await response.json();
+  const {
+    data: { IsBanned: isBanned, VerificationUrl: verificationUrl },
+  } = await response.json();
 
-  console.log({ data });
-  return data;
+  return { isBanned, verificationUrl };
 }

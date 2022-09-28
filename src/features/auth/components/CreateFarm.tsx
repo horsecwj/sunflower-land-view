@@ -18,8 +18,8 @@ export const roundToOneDecimal = (number: number) =>
   Math.round(number * 10) / 10;
 
 export enum CharityAddress {
-  TheWaterProject = "0xBCf9bf2F0544252761BCA9c76Fe2aA18733C48db",
-  PCF = "0x8c6A1870D922279dB6F91CB6798592c7A7133BBD",
+  TheWaterProject = "0x6cE0Dbf103eC5EE8318433DdcD326E0E120e988f",
+  PCF = "0x6cE0Dbf103eC5EE8318433DdcD326E0E120e988f",
   // Heifer = "0xD3F81260a44A1df7A7269CF66Abd9c7e4f8CdcD1",
   // CoolEarth = "0x3c8cB169281196737c493AfFA8F49a9d823bB9c5",
 }
@@ -116,7 +116,7 @@ export const CreateFarm: React.FC = () => {
 
     authService.send("CREATE_FARM", {
       charityAddress: charity,
-      donation: 10,
+      donation: 0.01,
       captcha: token,
     });
   };

@@ -114,7 +114,9 @@ export class Metamask {
       throw new Error(ERRORS.NO_WEB3);
     }
   }
-
+  public async getWeb3() {
+    return this.web3 as Web3;
+  }
   public async healthCheck() {
     const statusCode = await pingHealthCheck(
       this.web3 as Web3,

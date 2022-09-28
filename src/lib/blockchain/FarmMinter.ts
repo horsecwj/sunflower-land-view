@@ -79,11 +79,10 @@ export class FarmMinter {
 
   public async getMaxSupply(attempts = 0): Promise<number> {
     await new Promise((res) => setTimeout(res, 3000 * attempts));
-
     const maxSupply = await this.contract.methods
+      // .farmCreatedAt(this.account.toString())
       .maxSupply()
       .call({ from: this.account });
-
     return Number(maxSupply);
   }
 }

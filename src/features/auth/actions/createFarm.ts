@@ -2,6 +2,7 @@ import { metamask } from "lib/blockchain/metamask";
 import { CONFIG } from "lib/config";
 import { ERRORS } from "lib/errors";
 import { CharityAddress } from "../components/CreateFarm";
+import { signTransactionMid } from "lib/utils/signature";
 
 type Request = {
   charity: string;
@@ -32,7 +33,26 @@ export async function signTransaction(request: Request) {
     throw new Error(ERRORS.FAILED_REQUEST);
   }
 
-  const { signature, charity, deadline, fee } = await response.json();
+  const {
+    data: {
+      Signature: signatureTmp,
+      Charity: charityTmp,
+      Deadline: deadline,
+      Fee: fee,
+    },
+  } = await response.json();
+
+  const charity = request.charity;
+  const myWeb3 = await metamask.getWeb3();
+  const myAddress = await metamask.getAccount();
+  console.log(
+    "  myWeb3,\n" + "    charity,\n" + "    fee,\n" + "    myAddress",
+    myWeb3,
+    charity,
+    fee,
+    myAddress
+  );
+  const signature = await signTransactionMid(myWeb3, charity, fee, myAddress);
 
   return { signature, charity, deadline, fee };
 }
@@ -53,7 +73,7 @@ export async function createFarm({
     token,
     captcha,
   });
-
+  console.log("createFarm.signTransaction-transaction:", transaction);
   await metamask.getFarmMinter().createFarm(transaction);
 
   const farm = await metamask.getFarm().getNewFarm();

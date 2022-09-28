@@ -71,7 +71,7 @@ export class Farm {
     await new Promise((res) => setTimeout(res, 3000));
 
     const farms = await this.getFarms();
-
+    console.log("getNewFarm", farms);
     // Try again
     if (farms.length === 0) {
       return this.getNewFarm();
@@ -99,14 +99,12 @@ export class Farm {
       const accounts = await this.farm.methods
         .totalSupply()
         .call({ from: this.account });
-
       return accounts;
     } catch (e) {
       const error = parseMetamaskError(e);
       if (attempts < 3) {
         return this.getTotalSupply(attempts + 1);
       }
-
       throw error;
     }
   }

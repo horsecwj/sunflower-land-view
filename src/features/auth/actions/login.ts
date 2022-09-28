@@ -24,8 +24,10 @@ export async function loginRequest(request: Request) {
   if (response.status >= 400) {
     throw new Error(ERRORS.FAILED_REQUEST);
   }
-
-  const { token } = await response.json();
+  //        const {a:{b:{c:data}}} = obj; // 连续解构复制并且重命名
+  const {
+    data: { token },
+  } = await response.json();
 
   return { token };
 }
@@ -133,7 +135,6 @@ export async function login(): Promise<{ token: string }> {
     address,
     signature,
   });
-
   saveSession(address, { token });
 
   return { token };
