@@ -69,6 +69,12 @@ export class Inventory {
   }
 
   public async getBalances(farmAddress: string) {
+    console.log(
+      "i am in game laoding- inventory getBalance:",
+      IDS,
+      IDS.length,
+      farmAddress
+    );
     const batchAccounts = Array(IDS.length).fill(farmAddress);
     const balances = await this.contract.methods
       .balanceOfBatch(batchAccounts, IDS)

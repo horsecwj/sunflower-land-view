@@ -1,3 +1,8 @@
+todo:
+inventory.balanceOfBatch solidity
+token.balanceOf
+after creat farm,ui need to load coundown page
+bans api can mange the user farm to load or not
 0 修改 config，如果沒有會直接進入農場頁面
 initial: API_URL ? "loadingFarm" : "authorised",
 

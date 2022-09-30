@@ -5,6 +5,8 @@ import { ERRORS } from "lib/errors";
 import { sanitizeHTTPResponse } from "lib/network";
 import { makeGame } from "../lib/transforms";
 import { GameState, InventoryItemName } from "../types/game";
+import { INITIAL_FARM } from "../lib/constants";
+const GAME_STATE: GameState = INITIAL_FARM;
 
 type Request = {
   sessionId: string;
@@ -29,7 +31,11 @@ export async function loadSession(
   request: Request
 ): Promise<Response | undefined> {
   if (!API_URL) return;
-
+  console.log(
+    "i am in loadSession ",
+    request.bumpkinTokenUri,
+    request.sessionId
+  );
   const response = await window.fetch(`${API_URL}/session/${request.farmId}`, {
     method: "POST",
     //mode: "no-cors",
@@ -62,31 +68,65 @@ export async function loadSession(
   }
 
   const {
+    Farm,
+    StartedAt,
+    IsBlacklisted,
+    WhitelistedAt,
+    ItemsMintedAt,
+    BlacklistStatus,
+  } = await sanitizeHTTPResponse<{
+    Farm: any;
+    StartedAt: string;
+    IsBlacklisted: boolean;
+    WhitelistedAt: string;
+    ItemsMintedAt: MintedAt;
+    BlacklistStatus: Response["blacklistStatus"];
+  }>(response);
+  const farm = Farm;
+  const startedAt = StartedAt;
+  const isBlacklisted = IsBlacklisted;
+  const whitelistedAt = WhitelistedAt;
+  const itemsMintedAt = ItemsMintedAt;
+  const blacklistStatus = BlacklistStatus;
+
+  console.log(
+    "farm,=" +
+      "    startedAt," +
+      "    isBlacklisted," +
+      "    whitelistedAt," +
+      "    itemsMintedAt," +
+      "    blacklistStatus,",
     farm,
     startedAt,
     isBlacklisted,
     whitelistedAt,
     itemsMintedAt,
-    blacklistStatus,
-  } = await sanitizeHTTPResponse<{
-    farm: any;
-    startedAt: string;
-    isBlacklisted: boolean;
-    whitelistedAt: string;
-    itemsMintedAt: MintedAt;
-    blacklistStatus: Response["blacklistStatus"];
-  }>(response);
-
+    blacklistStatus
+  );
   saveSession(request.farmId);
-
-  const startedTime = new Date(startedAt);
-
+  console.log("saveSession over");
+  let startedTime;
+  if (farm == 0) {
+    startedTime = new Date(Date.now());
+  } else {
+    startedTime = new Date(startedAt);
+  }
+  console.log("saveSession startedTime ", startedTime, startedTime, farm);
   let offset = 0;
   // Clock is not in sync with actual UTC time
   if (Math.abs(startedTime.getTime() - Date.now()) > 1000 * 30) {
     offset = startedTime.getTime() - Date.now();
   }
-
+  if (farm == 0) {
+    return {
+      offset,
+      game: GAME_STATE,
+      isBlacklisted,
+      whitelistedAt,
+      itemsMintedAt,
+      blacklistStatus,
+    };
+  }
   return {
     offset,
     game: makeGame(farm),
@@ -105,10 +145,11 @@ type FarmSessions = Record<number, { account: string }>;
 
 export function getSessionId(): string {
   const item = localStorage.getItem(LOCAL_STORAGE_KEY);
-
+  console.log("getSessionId item", item);
   let id = "";
   if (item) {
     const sessions = JSON.parse(item) as FarmSessions;
+    console.log("getSessionId sessions:", sessions);
     id = Object.values(sessions).join(":");
   }
 
@@ -119,7 +160,7 @@ export function saveSession(farmId: number) {
   let sessions: FarmSessions = {};
 
   const item = localStorage.getItem(LOCAL_STORAGE_KEY);
-
+  console.log("saveSession item ", item);
   if (item) {
     sessions = JSON.parse(item) as FarmSessions;
   }
@@ -131,7 +172,7 @@ export function saveSession(farmId: number) {
   };
 
   const cacheKey = Buffer.from(JSON.stringify(farmSession)).toString("base64");
-
+  console.log("saveSession cacheKey ", cacheKey);
   const newSessions = {
     ...sessions,
     [farmId]: cacheKey,

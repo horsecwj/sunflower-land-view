@@ -41,7 +41,7 @@ export const Navigation: React.FC = () => {
       });
     }
   }, [send]);
-
+  // / 從 登陆界面跳转到 用户农场界面的 状态控制
   useEffect(() => {
     const _showGame =
       authState.matches({ connected: "authorised" }) ||

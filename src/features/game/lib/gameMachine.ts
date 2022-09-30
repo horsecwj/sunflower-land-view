@@ -253,7 +253,7 @@ export function startGame(authContext: Options) {
           invoke: {
             src: async () => {
               const farmId = authContext.farmId as number;
-
+              console.log("i am in game loading,famrId-", farmId);
               const {
                 game: onChain,
                 owner,
@@ -267,13 +267,16 @@ export function startGame(authContext: Options) {
                 farmAddress: authContext.address as string,
                 farmId: authContext.farmId as number,
               });
-
+              console.log("onChain", onChain);
+              console.log(",owner, ", owner);
+              console.log(" bumpkin, ", bumpkin);
+              console.log(" onChainEvents", onChainEvents);
               // Get sessionId
               const sessionId =
                 farmId &&
                 (await metamask.getSessionManager().getSessionId(farmId));
-
-              // Load the farm session
+              console.log("sessionId", sessionId);
+              // Load the farm session ,
               if (sessionId) {
                 const fingerprint = await getFingerPrint();
 
@@ -283,12 +286,19 @@ export function startGame(authContext: Options) {
                   sessionId,
                   token: authContext.rawToken as string,
                 });
-
+                console.log("loadSession response,", response);
                 if (!response) {
                   throw new Error("NO_FARM");
                 }
 
                 const { game, offset, whitelistedAt, itemsMintedAt } = response;
+                console.log(
+                  "game, offset, whitelistedAt, itemsMintedAt",
+                  game,
+                  offset,
+                  whitelistedAt,
+                  itemsMintedAt
+                );
 
                 // add farm address
                 game.farmAddress = authContext.address;

@@ -74,7 +74,8 @@ export async function autosaveRequest(
 
   // Useful for using cached results
   const cachedKey = getSessionId();
-
+  console.log("request.farmId", request.farmId);
+  console.log("autosaveRequest url:", `${API_URL}/autosave/${request.farmId}`);
   return await window.fetch(`${API_URL}/autosave/${request.farmId}`, {
     method: "POST",
     headers: {
