@@ -124,7 +124,7 @@ export type BlockchainEvent =
   | EditEvent
   | MintBumpkinEvent
   | { type: "EXPAND" };
-
+//对于每个游戏事件，将其转换为 XState 事件 + 处理程序
 // // For each game event, convert it to an XState event + handler
 const GAME_EVENT_HANDLERS: TransitionsConfig<Context, BlockchainEvent> =
   Object.keys(PLAYING_EVENTS).reduce(
@@ -139,7 +139,13 @@ const GAME_EVENT_HANDLERS: TransitionsConfig<Context, BlockchainEvent> =
               action: event,
               onChain: context.onChain as GameState,
             });
-
+            console.log(
+              "hoarding hoarding",
+              "events",
+              events,
+              "events",
+              eventName
+            );
             return !valid;
           },
           actions: assign((context: Context, event: PlayingEvent) => {
@@ -148,6 +154,13 @@ const GAME_EVENT_HANDLERS: TransitionsConfig<Context, BlockchainEvent> =
               action: event,
               onChain: context.onChain as GameState,
             });
+            console.log(
+              "hoarding assign",
+              "events",
+              events,
+              "events",
+              eventName
+            );
 
             return { maxedItem };
           }),
@@ -158,6 +171,7 @@ const GAME_EVENT_HANDLERS: TransitionsConfig<Context, BlockchainEvent> =
               state: context.state as GameState,
               action: event,
             }) as GameState,
+
             actions: [
               ...context.actions,
               {
@@ -396,9 +410,7 @@ export function startGame(authContext: Options) {
         playing: {
           invoke: {
             /**
-             * An in game loop that checks if Blockchain becomes out of sync
-             * It is a rare event but it saves a user from making too much progress that would not be synced
-             */
+             * 检查区块链是否不同步的游戏内循环这是一个罕见的事件，但它可以避免用户取得太多无法同步的进度*/
             src: (context) => (cb) => {
               const interval = setInterval(async () => {
                 const sessionID = await metamask
@@ -479,7 +491,7 @@ export function startGame(authContext: Options) {
                 offset: context.offset,
                 fingerprint: context.fingerprint as string,
               });
-
+              //这使 UI 有时间在单击保存和自动保存时指示正在进行保存
               // This gives the UI time to indicate that a save is taking place both when clicking save
               // and when autosaving
               await new Promise((res) => setTimeout(res, 1000));

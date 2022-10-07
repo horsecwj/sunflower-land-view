@@ -1,6 +1,23 @@
 todo:
 inventory.balanceOfBatch solidity
 token.balanceOf
+bumkin.sol
+
+2
+session
+loadSession get api 返回的数据为固定的原始数据返回
+所以 要怎么将 ts 的解构数据转换为 go 的 json 数据，
+再进行转换
+所以 官方的应该用的 nodejs 后端
+3 autosAve 有 api 后面回来的 response
+怎么再转化为 gameState
+
+4
+autosave 的 response 由后端进行 数据的 curd
+mageGame 将 curd 更新到 farm state 中
+所以 第一次创建 farm 的时候应该在 服务器中存储 initialFarm sate
+后续 save 改变的是 服务器的 json 数据
+
 after creat farm,ui need to load coundown page
 bans api can mange the user farm to load or not
 0 修改 config，如果沒有會直接進入農場頁面

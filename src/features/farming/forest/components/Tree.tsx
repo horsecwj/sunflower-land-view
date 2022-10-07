@@ -118,7 +118,7 @@ export const Tree: React.FC<Props> = ({ treeIndex }) => {
 
     setTouchCount((count) => count + 1);
 
-    // On third shake, chop
+    // On third shake, chop 第三次摇晃，剁碎
     if (touchCount > 0 && touchCount === HITS - 1) {
       chop();
       treeFallAudio.play();

@@ -9,6 +9,7 @@ import { PastAction } from "../lib/gameMachine";
 import { makeGame } from "../lib/transforms";
 import { CraftAction } from "../types/craftables";
 import { getSessionId } from "./loadSession";
+import { classToPlain, serialize as serializeT } from "class-transformer";
 
 type Request = {
   actions: PastAction[];
@@ -100,13 +101,20 @@ export async function autosave(request: Request) {
 
   // Shorten the payload
   const events = squashEvents(request.actions);
-
+  console.log("events", events);
   // Serialize values before sending
   const actions = serialize(events, request.offset);
+  console.log("actions", actions);
 
   if (actions.length === 0) {
     return { verified: true };
   }
+  const requestjSON = classToPlain(request);
+  const requestjSONserialize = serializeT(request);
+
+  console.log("requestjSON", requestjSON);
+  console.log("requestjSONserialize", requestjSONserialize);
+  console.log("request", request);
 
   const response = await autosaveRequest({
     ...request,

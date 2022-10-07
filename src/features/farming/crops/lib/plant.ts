@@ -46,7 +46,7 @@ export type Lifecycle = {
   ready: any;
 };
 
-/**
+/** 作物及其原始价格 TODO - 使用 GraphQL API 中的作物名称
  * Crops and their original prices
  * TODO - use crop name from GraphQL API
  */

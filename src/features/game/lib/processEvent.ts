@@ -54,7 +54,7 @@ const maxItems: Inventory = {
     {}
   ),
 
-  // Max of 1 skill badge
+  // Max of 1 skill badge 徽章
   ...(Object.keys(SKILL_TREE) as InventoryItemName[]).reduce(
     (acc, name) => ({
       ...acc,
@@ -64,7 +64,7 @@ const maxItems: Inventory = {
   ),
 };
 
-/**
+/**在单个会话中人类可能的 SFL
  * Humanly possible SFL in a single session
  */
 const MAX_SESSION_SFL = 175;
@@ -81,12 +81,17 @@ export function checkProgress({ state, action, onChain }: checkProgressArgs): {
     newState = processEvent({ state, action });
   } catch {
     // Not our responsibility to catch events, pass on to the next handler
+    // /捕获事件不是我们的责任，传递给下一个处理程序
     return { valid: true };
   }
+  console.log("state  ", state);
+  console.log("action,", action, " onChain ", onChain);
+
+  console.log("checkProgress  newState", newState, onChain.balance);
 
   const progress = newState.balance.sub(onChain.balance);
 
-  /**
+  /** 合同强制 SFL 上限 以防万一玩家陷入腐败状态并设法赚取额外的 SFL
    * Contract enforced SFL caps
    * Just in case a player gets in a corrupt state and manages to earn extra SFL
    */
@@ -115,7 +120,7 @@ export function checkProgress({ state, action, onChain }: checkProgressArgs): {
 
     return true;
   });
-
+  console.log("valid: validProgress, maxedItem", validProgress, maxedItem);
   return { valid: validProgress, maxedItem };
 }
 
@@ -125,6 +130,7 @@ type ProcessEventArgs = {
 };
 
 export function processEvent({ state, action }: ProcessEventArgs): GameState {
+  console.log("processEvent", state, action);
   const handler = EVENTS[action.type];
 
   if (!handler) {

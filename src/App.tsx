@@ -3,6 +3,7 @@ import React from "react";
 import * as Auth from "features/auth/lib/Provider";
 import { initialise } from "lib/utils/init";
 import { Navigation } from "./Navigation";
+import "reflect-metadata";
 
 import "./styles.css";
 
