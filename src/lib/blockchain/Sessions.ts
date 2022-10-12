@@ -5,6 +5,8 @@ import Web3 from "web3";
 import { AbiItem, fromWei } from "web3-utils";
 import SessionABI from "./abis/Session.json";
 import { estimateGasPrice, parseMetamaskError } from "./utils";
+import { toWei } from "web3-utils";
+import { syncSessionArgs } from "lib/utils/signature";
 
 const address = CONFIG.SESSION_CONTRACT;
 
@@ -166,7 +168,6 @@ export class SessionManager {
   public async sync({
     signature,
     sessionId,
-    nextSessionId,
     deadline,
     farmId,
     mintIds,
@@ -174,38 +175,23 @@ export class SessionManager {
     burnIds,
     burnAmounts,
     tokens,
-    fee,
-  }: {
-    signature: string;
-    sessionId: string;
-    nextSessionId: string;
-    deadline: number;
-    // Data
-    farmId: number;
-    mintIds: number[];
-    mintAmounts: number[];
-    burnIds: number[];
-    burnAmounts: number[];
-    tokens: number;
-    fee: string;
-  }): Promise<string> {
+  }: syncSessionArgs): Promise<string> {
     const oldSessionId = await this.getSessionId(farmId);
     const gasPrice = await estimateGasPrice(this.web3);
+    const fee = toWei("0.1");
 
     await new Promise((resolve, reject) => {
       this.contract.methods
         .sync(
           signature,
           sessionId,
-          nextSessionId,
           deadline,
           farmId,
           mintIds,
           mintAmounts,
           burnIds,
           burnAmounts,
-          tokens,
-          fee
+          tokens
         )
         .send({ from: this.account, value: fee, gasPrice })
         .on("error", function (error: any) {

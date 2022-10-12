@@ -412,6 +412,7 @@ export function startGame(authContext: Options) {
             /**
              * 检查区块链是否不同步的游戏内循环这是一个罕见的事件，但它可以避免用户取得太多无法同步的进度*/
             src: (context) => (cb) => {
+              console.log("i am in palying");
               const interval = setInterval(async () => {
                 const sessionID = await metamask
                   .getSessionManager()
@@ -490,6 +491,7 @@ export function startGame(authContext: Options) {
                 token: authContext.rawToken as string,
                 offset: context.offset,
                 fingerprint: context.fingerprint as string,
+                gameState: context.state,
               });
               //这使 UI 有时间在单击保存和自动保存时指示正在进行保存
               // This gives the UI time to indicate that a save is taking place both when clicking save
@@ -537,6 +539,7 @@ export function startGame(authContext: Options) {
                   token: authContext.rawToken as string,
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
+                  gameState: context.state,
                 });
               }
 
@@ -545,6 +548,7 @@ export function startGame(authContext: Options) {
                 sessionId: context.sessionId as string,
                 token: authContext.rawToken as string,
                 captcha: (event as SyncEvent).captcha,
+                gameState: context.state,
               });
 
               return {
@@ -586,6 +590,7 @@ export function startGame(authContext: Options) {
                   token: authContext.rawToken as string,
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
+                  gameState: context.state,
                 });
               }
 
@@ -689,6 +694,7 @@ export function startGame(authContext: Options) {
                   token: authContext.rawToken as string,
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
+                  gameState: context.state,
                 });
               }
 

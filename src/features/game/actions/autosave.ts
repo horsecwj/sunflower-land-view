@@ -8,8 +8,9 @@ import { SellAction } from "../events/sell";
 import { PastAction } from "../lib/gameMachine";
 import { makeGame } from "../lib/transforms";
 import { CraftAction } from "../types/craftables";
-import { getSessionId } from "./loadSession";
-import { classToPlain, serialize as serializeT } from "class-transformer";
+import { getSessionId, SaveGameState } from "./loadSession";
+import { classToPlain } from "class-transformer";
+import { GameState } from "../types/game";
 
 type Request = {
   actions: PastAction[];
@@ -18,6 +19,7 @@ type Request = {
   token: string;
   offset: number;
   fingerprint: string;
+  gameState: GameState;
 };
 
 const API_URL = CONFIG.API_URL;
@@ -77,6 +79,7 @@ export async function autosaveRequest(
   const cachedKey = getSessionId();
   console.log("request.farmId", request.farmId);
   console.log("autosaveRequest url:", `${API_URL}/autosave/${request.farmId}`);
+
   return await window.fetch(`${API_URL}/autosave/${request.farmId}`, {
     method: "POST",
     headers: {
@@ -96,31 +99,45 @@ export async function autosaveRequest(
   });
 }
 
+function CURDEvents(events: PastAction[], state: GameState) {
+  for (const val in events) {
+    const tempEvent = events[val];
+    console.log("CURDEvents", val, events[val]);
+    if (tempEvent.type == "tree.chopped") {
+      console.log("tree is cut down ");
+      // tempEvent as
+    }
+  }
+
+  return state;
+}
 export async function autosave(request: Request) {
   if (!API_URL) return { verified: true };
 
   // Shorten the payload
   const events = squashEvents(request.actions);
   console.log("events", events);
-  // Serialize values before sending
   const actions = serialize(events, request.offset);
   console.log("actions", actions);
-
   if (actions.length === 0) {
     return { verified: true };
   }
   const requestjSON = classToPlain(request);
-  const requestjSONserialize = serializeT(request);
-
+  console.log("request.gameState", request.gameState);
   console.log("requestjSON", requestjSON);
-  console.log("requestjSONserialize", requestjSONserialize);
-  console.log("request", request);
-
+  // CURDEvents(request.actions, request.gameState);
   const response = await autosaveRequest({
     ...request,
     actions,
   });
-
+  await SaveGameState(
+    request.farmId,
+    "",
+    request.gameState,
+    false,
+    request.token,
+    false
+  );
   if (response.status === 503) {
     throw new Error(ERRORS.MAINTENANCE);
   }
@@ -141,7 +158,7 @@ export async function autosave(request: Request) {
     farm: any;
   }>(response);
 
-  const game = makeGame(farm);
+  const game = makeGame(request.gameState);
 
-  return { verified: true, farm: game };
+  return { verified: true, farm: request.gameState };
 }

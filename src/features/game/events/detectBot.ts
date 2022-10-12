@@ -36,6 +36,7 @@ export function isSwarming() {
   if (!time) {
     return false;
   }
+  console.log("i am in isSwarming,return ", Date.now() < time.getTime());
 
   return Date.now() < time.getTime();
 }

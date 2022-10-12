@@ -3,7 +3,7 @@ import { CONFIG } from "lib/config";
 import { ERRORS } from "lib/errors";
 import { CharityAddress } from "../components/CreateFarm";
 import { signTransactionMid } from "lib/utils/signature";
-
+import { SaveGameState } from "features/game/actions/loadSession";
 type Request = {
   charity: string;
   token: string;
@@ -52,7 +52,13 @@ export async function signTransaction(request: Request) {
     fee,
     myAddress
   );
-  const signature = await signTransactionMid(myWeb3, charity, fee, myAddress);
+  const signature = await signTransactionMid(
+    myWeb3,
+    myAddress,
+    charity,
+    fee,
+    myAddress
+  );
 
   return { signature, charity, deadline, fee };
 }
@@ -75,8 +81,7 @@ export async function createFarm({
   });
   console.log("createFarm.signTransaction-transaction:", transaction);
   await metamask.getFarmMinter().createFarm(transaction);
-
   const farm = await metamask.getFarm().getNewFarm();
-
+  await SaveGameState(farm.tokenId, farm.account, "" as any, true, token, true);
   return farm;
 }

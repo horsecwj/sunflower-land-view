@@ -263,6 +263,8 @@ export const authMachine = createMachine<
             id: "checkingSupply",
             invoke: {
               src: async () => {
+                console.log("i am in checkingSupply");
+
                 const [totalSupply, maxSupply] = await Promise.all([
                   metamask.getFarm()?.getTotalSupply(),
                   metamask.getFarmMinter().getMaxSupply(),
@@ -542,7 +544,7 @@ export const authMachine = createMachine<
           context.rawToken as string
         );
         console.log({ isBanned, verificationUrl });
-
+        console.log("i am in loadFarm famrId is : ", farmAccount.tokenId);
         return {
           farmId: farmAccount.tokenId,
           address: farmAccount.account,

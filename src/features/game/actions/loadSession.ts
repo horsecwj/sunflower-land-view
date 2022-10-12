@@ -3,9 +3,10 @@ import { metamask } from "lib/blockchain/metamask";
 import { CONFIG } from "lib/config";
 import { ERRORS } from "lib/errors";
 import { sanitizeHTTPResponse } from "lib/network";
-import { makeGame } from "../lib/transforms";
+import { makeGame, saveGame } from "../lib/transforms";
 import { GameState, InventoryItemName } from "../types/game";
 import { INITIAL_FARM } from "../lib/constants";
+import { serialize as serializeT } from "class-transformer";
 const GAME_STATE: GameState = INITIAL_FARM;
 
 type Request = {
@@ -27,6 +28,120 @@ type Response = {
 
 const API_URL = CONFIG.API_URL;
 
+export async function SaveGameState(
+  farmId: number,
+  owner: string,
+  state: GameState,
+  first: boolean,
+  token: string,
+  synced: boolean
+) {
+  let stateSerialize = "";
+  if (first) {
+    const resGame = saveGame(INITIAL_FARM);
+    stateSerialize = serializeT(resGame);
+  } else {
+    const resGame = saveGame(state);
+    stateSerialize = serializeT(resGame);
+  }
+  console.log("save state", `${API_URL}/saveState/${farmId}`);
+  const response = await window.fetch(`${API_URL}/saveState/${farmId}`, {
+    method: "POST",
+    //mode: "no-cors",
+    headers: {
+      "content-type": "application/json;charset=UTF-8",
+      Authorization: `Bearer ${token}`,
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      stateSerialize,
+      owner,
+      synced,
+      first,
+    }),
+  });
+  if (response.status === 503) {
+    throw new Error(ERRORS.MAINTENANCE);
+  }
+
+  if (response.status === 429) {
+    throw new Error(ERRORS.TOO_MANY_REQUESTS);
+  }
+  return true;
+}
+
+export async function GetGameState(
+  farmId: number,
+  token: string,
+  synced: boolean
+) {
+  const response = await window.fetch(`${API_URL}/getState/${farmId}`, {
+    method: "post",
+    //mode: "no-cors",
+    headers: {
+      "content-type": "application/json;charset=UTF-8",
+      Authorization: `Bearer ${token}`,
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      synced,
+    }),
+  });
+  if (response.status === 503) {
+    throw new Error(ERRORS.MAINTENANCE);
+  }
+
+  if (response.status === 429) {
+    throw new Error(ERRORS.TOO_MANY_REQUESTS);
+  }
+  const dataSrc = await response.json();
+  console.log("dataSrc-", dataSrc);
+  const {
+    data: {
+      Res: { farmJson: farmJson, createdAt: created_at, updatedAt: updated_at },
+    },
+  } = dataSrc;
+  let flag = false;
+  console.log(
+    "created_at",
+    created_at,
+    updated_at,
+    "updated_at",
+    "res ",
+    created_at == updated_at
+  );
+  if (created_at == updated_at) {
+    flag = true;
+  } else {
+    flag = false;
+  }
+  return { farmJson, flag };
+}
+
+export async function GetSyncedGameState(farmId: number, token: string) {
+  const response = await window.fetch(`${API_URL}/getSyncedState/${farmId}`, {
+    method: "get",
+    //mode: "no-cors",
+    headers: {
+      "content-type": "application/json;charset=UTF-8",
+      Authorization: `Bearer ${token}`,
+      accept: "application/json",
+    },
+  });
+  if (response.status === 503) {
+    throw new Error(ERRORS.MAINTENANCE);
+  }
+
+  if (response.status === 429) {
+    throw new Error(ERRORS.TOO_MANY_REQUESTS);
+  }
+  const {
+    data: {
+      Res: { farmJson },
+    },
+  } = await response.json();
+  return farmJson;
+}
 export async function loadSession(
   request: Request
 ): Promise<Response | undefined> {
@@ -105,31 +220,33 @@ export async function loadSession(
   );
   saveSession(request.farmId);
   console.log("saveSession over");
-  let startedTime;
-  if (farm == 0) {
-    startedTime = new Date(Date.now());
-  } else {
-    startedTime = new Date(startedAt);
-  }
+
+  // let startedTime;
+  // if (farm == 0) {
+  //   startedTime = new Date(Date.now());
+  // } else {
+  //   startedTime = new Date(startedAt);
+  // }
+  const startedTime = new Date(Date.now());
   console.log("saveSession startedTime ", startedTime, startedTime, farm);
   let offset = 0;
   // Clock is not in sync with actual UTC time
   if (Math.abs(startedTime.getTime() - Date.now()) > 1000 * 30) {
     offset = startedTime.getTime() - Date.now();
   }
-  if (farm == 0) {
-    return {
-      offset,
-      game: GAME_STATE,
-      isBlacklisted,
-      whitelistedAt,
-      itemsMintedAt,
-      blacklistStatus,
-    };
-  }
+
+  const { farmJson: resJson, flag: flag } = await GetGameState(
+    request.farmId,
+    request.token,
+    false
+  );
+  const resjj = JSON.parse(resJson);
+  const serverState = makeGame(resjj);
+  console.log("GetGameState ", serverState);
+
   return {
     offset,
-    game: makeGame(farm),
+    game: serverState,
     isBlacklisted,
     whitelistedAt,
     itemsMintedAt,

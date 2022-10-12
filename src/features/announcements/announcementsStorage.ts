@@ -11,10 +11,13 @@ export const PAST_ANNOUNCEMENTS = SORTED_ANNOUNCEMENTS.filter(
 
 export function hasAnnouncements() {
   const lastRead = getAnnouncementLastRead();
-
+  let flag = false;
   if (lastRead) {
-    return new Date(lastRead) < PAST_ANNOUNCEMENTS[0].date;
-  } else return true;
+    flag = new Date(lastRead) < PAST_ANNOUNCEMENTS[0].date;
+  } else {
+    flag = true;
+  }
+  console.log("i am in hasAnnouceMents return,return flag is  ", flag);
 }
 
 export function getAnnouncements() {

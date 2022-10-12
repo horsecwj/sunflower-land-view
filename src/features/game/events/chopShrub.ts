@@ -30,6 +30,7 @@ export function chopShrub({
   action,
   createdAt = Date.now(),
 }: Options): GameState {
+  console.log("i am in chopShrub");
   const stateCopy = cloneDeep(state);
   const { expansions } = stateCopy;
   const expansion = expansions[action.expansionIndex];

@@ -67,6 +67,7 @@ export function chop({
   action,
   createdAt = Date.now(),
 }: Options): GameState {
+  console.log(" i am in chop");
   const stateCopy = cloneDeep(state);
   const requiredAxes = getRequiredAxeAmount(stateCopy.inventory);
   if (action.item !== "Axe" && requiredAxes.gt(0)) {
@@ -102,7 +103,7 @@ export function chop({
       [action.index]: {
         ...stateCopy.trees[action.index],
         choppedAt: getChoppedAt({ createdAt, inventory: stateCopy.inventory }),
-        // Placeholder, random numbers generated on server side
+        // Placeholder, random numbers generated on server side 占位符，服务器端生成的随机数
         wood: new Decimal(3),
       },
     },
