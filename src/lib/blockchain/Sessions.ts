@@ -178,7 +178,7 @@ export class SessionManager {
   }: syncSessionArgs): Promise<string> {
     const oldSessionId = await this.getSessionId(farmId);
     const gasPrice = await estimateGasPrice(this.web3);
-    const fee = toWei("0.1");
+    const fee = toWei("0");
 
     await new Promise((resolve, reject) => {
       this.contract.methods

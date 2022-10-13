@@ -124,7 +124,10 @@ export async function sync({
 
   // const transaction = await response.json();
   const newSessionId = await metamask.getSessionManager().sync(args2);
+  console.log("newSessionId", newSessionId);
   await SaveGameState(farmId, "", gameState, false, token, true);
+  console.log("SaveGameState over");
+
   return { verified: true, sessionId: "newSessionId" };
 }
 

@@ -7,7 +7,7 @@ import { balancesToInventory, populateFields } from "lib/utils/visitUtils";
 import { GameState, Inventory } from "../types/game";
 import { LIMITED_ITEM_NAMES } from "../types/craftables";
 import { EMPTY } from "../lib/constants";
-import { CONFIG } from "lib/config";
+import { CONFIG, tokenMulNum } from "lib/config";
 import { KNOWN_IDS } from "../types";
 import { Recipe } from "lib/blockchain/Sessions";
 import { OnChainBumpkin } from "lib/blockchain/BumpkinDetails";
@@ -117,7 +117,7 @@ export async function getOnChainState({
   return {
     game: {
       ...EMPTY,
-      balance: new Decimal(fromWei(balance)),
+      balance: new Decimal(fromWei(balance)).div(tokenMulNum),
       farmAddress,
       fields,
       inventory,

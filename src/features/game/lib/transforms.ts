@@ -8,7 +8,7 @@ import {
   Tree,
 } from "../types/game";
 import { KNOWN_IDS } from "features/game/types";
-
+import { tokenMulNum } from "src/lib/config";
 /**
  * Converts API response into a game state
  */
@@ -267,7 +267,7 @@ export function diffGameInventory(
   );
   const tokens = new Decimal(newGameState.balance)
     .sub(new Decimal(oldGameState.balance | 0))
-    .mul(100000)
+    .mul(tokenMulNum)
     .toString();
   console.log("balance diff ", tokens);
   console.log(finalInventory);

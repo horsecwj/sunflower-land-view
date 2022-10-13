@@ -1,7 +1,7 @@
 const NETWORK = import.meta.env.VITE_NETWORK as "mainnet" | "mumbai";
 const DONATION_ADDRESS = import.meta.env.VITE_DONATION_ADDRESS;
 const TREASURY_ADDRESS = import.meta.env.VITE_TREASURY_ADDRESS as string;
-
+export const tokenMulNum = 100000;
 const POLYGON_CHAIN_ID = NETWORK === "mainnet" ? 137 : 80001;
 
 const API_URL = import.meta.env.VITE_API_URL;
