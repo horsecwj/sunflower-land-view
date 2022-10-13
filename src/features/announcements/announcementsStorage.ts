@@ -18,6 +18,7 @@ export function hasAnnouncements() {
     flag = true;
   }
   console.log("i am in hasAnnouceMents return,return flag is  ", flag);
+  return flag;
 }
 
 export function getAnnouncements() {

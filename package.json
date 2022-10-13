@@ -51,8 +51,7 @@
     "util": "^0.12.4",
     "web3": "^1.6.1",
     "web3-health-check": "1.0.16",
-    "web3-utils": "^1.8.0",
-    "xstate": "^4.33.1"
+    "xstate": "4.33.1"
   },
   "devDependencies": {
     "@rollup/plugin-inject": "^4.0.4",

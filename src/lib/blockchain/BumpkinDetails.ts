@@ -17,7 +17,16 @@ export type OnChainBumpkin = {
   metadata: string;
   wardrobe: string;
 };
-
+export const Initial_OnChainBumpkin: OnChainBumpkin = {
+  tokenId: "string",
+  tokenURI: "string",
+  owner: "string",
+  createdAt: "string",
+  createdBy: "string",
+  nonce: "string",
+  metadata: "string",
+  wardrobe: "string",
+};
 /*
  * Bumpkin details contract
  */
@@ -37,17 +46,17 @@ export class BumpkinDetails {
     }
 
     this.contract = new this.web3.eth.Contract(
-      BumpkinDetailsABI as AbiItem[],
-      address as string
+      BumpkinDetailsABI as unknown as AbiItem[],
+      address
     ) as unknown as IBumpkinDetails;
   }
 
   public async loadBumpkins(): Promise<OnChainBumpkin[]> {
-    console.log("load");
+    console.log("loadBumpkins");
+
     if (!this.contract) {
       return [];
     }
-
     return this.contract.methods
       .loadBumpkins(metamask.myAccount as string)
       .call({ from: this.account });

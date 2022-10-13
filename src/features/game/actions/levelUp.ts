@@ -3,6 +3,7 @@ import { sanitizeHTTPResponse } from "lib/network";
 import { makeGame } from "../lib/transforms";
 import { SkillName } from "../types/skills";
 import { autosaveRequest } from "./autosave";
+import { GameState } from "features/game/types/game";
 
 type Request = {
   farmId: number;
@@ -11,6 +12,7 @@ type Request = {
   fingerprint: string;
   skill: SkillName;
   offset: number;
+  gameState: GameState;
 };
 
 const API_URL = CONFIG.API_URL;

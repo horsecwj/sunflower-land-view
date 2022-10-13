@@ -265,7 +265,7 @@ export function startGame(authContext: Options) {
       states: {
         loading: {
           invoke: {
-            src: async () => {
+            src: async (context) => {
               const farmId = authContext.farmId as number;
               console.log("i am in game loading,famrId-", farmId);
               const {
@@ -412,7 +412,6 @@ export function startGame(authContext: Options) {
             /**
              * 检查区块链是否不同步的游戏内循环这是一个罕见的事件，但它可以避免用户取得太多无法同步的进度*/
             src: (context) => (cb) => {
-              console.log("i am in palying");
               const interval = setInterval(async () => {
                 const sessionID = await metamask
                   .getSessionManager()
@@ -601,6 +600,7 @@ export function startGame(authContext: Options) {
                 fingerprint: context.fingerprint as string,
                 skill: (event as LevelUpEvent).skill,
                 offset: context.offset,
+                gameState: context.state,
               });
 
               return {
