@@ -66,11 +66,13 @@ export const GoblinShovel: React.FC = () => {
       setGoblinPosition(positions[randomPosition]);
 
       const isStolen = isShovelStolen();
+      console.log("isStolen", isStolen);
       setShowModal(isStolen);
       setShowGoblin(isStolen);
     };
 
     gameService.onEvent((event) => {
+      console.log("i am in harvested");
       if (event.type == "item.harvested") {
         addToHarvestCount(1);
         detectGoblins();
@@ -94,7 +96,7 @@ export const GoblinShovel: React.FC = () => {
   //if the normal shovel hasn't been crafted show rusty shovel instead of normal shovel
   const goblin = state.inventory.Shovel?.gte(1) ? shovelGoblin : rustyGoblin;
   const shovelImage = state.inventory.Shovel?.gte(1) ? shovel : rustyShovel;
-
+  console.log("goblin", goblin, "shovelImage", shovelImage);
   return (
     <>
       <Modal centered show={showModal}>

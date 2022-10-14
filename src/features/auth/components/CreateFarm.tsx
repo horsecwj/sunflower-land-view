@@ -121,9 +121,25 @@ export const CreateFarm: React.FC = () => {
     });
   };
 
+  const onCaptchaSolvedNoToken = (charityString: string | null) => {
+    authService.send("CREATE_FARM", {
+      charityAddress: charityString,
+      donation: 0.01,
+      captcha: "true",
+    });
+  };
+
   const onDonateAndPlayClick = (charityAddress: CharityAddress) => {
     setCharity(charityAddress);
-    setShowCaptcha(true);
+    console.log(
+      "onDonateAndPlayClick charityAddress - charity-",
+      charityAddress,
+      charity
+    );
+
+    onCaptchaSolvedNoToken(charityAddress);
+
+    // setShowCaptcha(true);
   };
 
   const updateActiveIndex = (newIdx: number) => {

@@ -92,7 +92,10 @@ export const Menu = () => {
   };
 
   const syncOnChain = async () => {
-    setShowCaptcha(true);
+    const tmpCaptha = "true";
+    gameService.send("SYNC", { tmpCaptha });
+    setMenuOpen(false);
+    // setShowCaptcha(true);
   };
 
   const onCaptchaSolved = async (captcha: string | null) => {

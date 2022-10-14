@@ -4,6 +4,7 @@
   "author": "developer@sunflower-land.com",
   "license": "UNLICENSED",
   "private": true,
+  "homepage": ".",
   "scripts": {
     "dev": "set NODE_ENV=development && vite --port 3000 --host",
     "build": "tsc && vite build",

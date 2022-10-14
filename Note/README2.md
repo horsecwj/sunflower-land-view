@@ -1,8 +1,8 @@
 todo:
-inventory.balanceOfBatch solidity
-token.balanceOf
+
 bumkin.sol
 
+absolute z-10 hover:img-highlight cursor-pointer
 2
 session
 loadSession get api 返回的数据为固定的原始数据返回

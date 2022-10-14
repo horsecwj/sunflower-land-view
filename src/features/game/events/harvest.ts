@@ -18,7 +18,8 @@ type Options = {
 
 export const isShovelStolen = () => {
   const goblinThreshold = getGoblinCount().add(1).pow(3).mul(57);
-
+  console.log("isShovelStolen ,goblinThreshold ", goblinThreshold);
+  console.log("getHarvestCount()", getHarvestCount());
   return getHarvestCount().greaterThanOrEqualTo(goblinThreshold);
 };
 

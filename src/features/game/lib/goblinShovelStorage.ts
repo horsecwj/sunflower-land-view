@@ -20,7 +20,7 @@ export function recoverShovel() {
 
 export function getGoblinCount() {
   const goblinShovel = getGoblinShovel();
-
+  console.log("getGoblinCount -goblinShovel ", goblinShovel);
   return goblinShovel.goblinCount;
 }
 
