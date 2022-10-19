@@ -11,14 +11,19 @@ import {
   InventoryItemName,
   CropReward as Reward,
 } from "features/game/types/game";
-
 import { CropName, CROPS } from "features/game/types/crops";
 import { ITEM_DETAILS } from "features/game/types/images";
-import { GRID_WIDTH_PX, POPOVER_TIME_MS } from "features/game/lib/constants";
+import {
+  GRID_WIDTH_PX,
+  PIXEL_SCALE,
+  POPOVER_TIME_MS,
+} from "features/game/lib/constants";
 import { Soil } from "./Soil";
 import { harvestAudio, plantAudio } from "lib/utils/sfx";
+import Spritesheet from "components/animation/SpriteAnimator";
 import { HealthBar } from "components/ui/HealthBar";
 import { CropReward } from "./CropReward";
+import { HARVEST_PROC_ANIMATION } from "../lib/plant";
 
 interface Props {
   selectedItem?: InventoryItemName;
@@ -39,6 +44,7 @@ export const Field: React.FC<Props> = ({
 }) => {
   const [showPopover, setShowPopover] = useState(true);
   const [popover, setPopover] = useState<JSX.Element | null>();
+  const [procAnimation, setProcAnimation] = useState<JSX.Element | null>();
   const { gameService } = useContext(Context);
   const [touchCount, setTouchCount] = useState(0);
   const [reward, setReward] = useState<Reward | null>(null);
@@ -69,10 +75,7 @@ export const Field: React.FC<Props> = ({
   const onCollectReward = () => {
     setReward(null);
     setTouchCount(0);
-
-    gameService.send("item.harvested", {
-      index: fieldIndex,
-    });
+    harvestCrop();
   };
 
   const removeCrop = () => {
@@ -85,6 +88,41 @@ export const Field: React.FC<Props> = ({
       fieldIndex,
     });
     setIsRemoving(false);
+  };
+
+  const harvestCrop = () => {
+    gameService.send("item.harvested", {
+      index: fieldIndex,
+    });
+
+    harvestAudio.play();
+
+    if (field.multiplier && field.multiplier >= 10) {
+      setProcAnimation(
+        <Spritesheet
+          className="absolute pointer-events-none bottom-[4px] -left-[26px]"
+          style={{
+            width: `${
+              (HARVEST_PROC_ANIMATION.size / HARVEST_PROC_ANIMATION.scale) *
+              PIXEL_SCALE
+            }px`,
+          }}
+          image={HARVEST_PROC_ANIMATION.sprites[field.name]}
+          widthFrame={HARVEST_PROC_ANIMATION.size}
+          heightFrame={HARVEST_PROC_ANIMATION.size}
+          fps={HARVEST_PROC_ANIMATION.fps}
+          steps={HARVEST_PROC_ANIMATION.steps}
+          hiddenWhenPaused={true}
+        />
+      );
+    }
+
+    displayPopover(
+      <div className="flex items-center justify-center text-xs text-white text-shadow overflow-visible">
+        <img src={ITEM_DETAILS[field.name].image} className="w-4 mr-1" />
+        <span>{`+${field.multiplier || 1}`}</span>
+      </div>
+    );
   };
 
   const handleMouseHover = () => {
@@ -189,18 +227,7 @@ export const Field: React.FC<Props> = ({
     }
 
     try {
-      gameService.send("item.harvested", {
-        index: fieldIndex,
-      });
-
-      harvestAudio.play();
-
-      displayPopover(
-        <div className="flex items-center justify-center text-xs text-white text-shadow overflow-visible">
-          <img src={ITEM_DETAILS[field.name].image} className="w-4 mr-1" />
-          <span>{`+${field.multiplier || 1}`}</span>
-        </div>
-      );
+      harvestCrop();
     } catch (e: any) {
       // TODO - catch more elaborate errors
       displayPopover(<img className="w-5" src={cancel} />);
@@ -227,6 +254,8 @@ export const Field: React.FC<Props> = ({
         showCropDetails={showCropDetails}
         isRemoving={isRemoving}
       />
+
+      {procAnimation}
 
       <div
         className={classNames(

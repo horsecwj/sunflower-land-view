@@ -6,6 +6,7 @@ import { Box } from "components/ui/Box";
 import { ITEM_DETAILS } from "features/game/types/images";
 import {
   CraftableItem,
+  CRAFTABLES,
   filterLimitedItemsByType,
   LimitedItem,
   LimitedItemName,
@@ -16,11 +17,10 @@ import { Context } from "features/game/GoblinProvider";
 import { metamask } from "lib/blockchain/metamask";
 import { CONFIG } from "lib/config";
 import { Button } from "components/ui/Button";
-import ReCAPTCHA from "react-google-recaptcha";
 import { OuterPanel } from "components/ui/Panel";
 import Decimal from "decimal.js-light";
 
-import token from "assets/icons/token.gif";
+import token from "assets/icons/token_2.png";
 import timer from "assets/icons/timer.png";
 import busyGoblin from "assets/npcs/goblin_doing.gif";
 
@@ -43,8 +43,9 @@ const Items: React.FC<{
   items: Partial<Record<LimitedItemName, LimitedItem>>;
   selected: InventoryItemName;
   inventory: GameState["inventory"];
+  type: LimitedItemType | LimitedItemType[];
   onClick: (item: CraftableItem | LimitedItem) => void;
-}> = ({ items, selected, inventory, onClick }) => {
+}> = ({ items, selected, inventory, onClick, type }) => {
   const ordered = Object.values(items);
 
   return (
@@ -72,6 +73,11 @@ const Items: React.FC<{
           />
         ))}
       </div>
+      {type === LimitedItemType.WarTentItem && (
+        <p className="text-xxs underline mt-4">
+          You can mint multiple War Skull and War Tombstones
+        </p>
+      )}
     </div>
   );
 };
@@ -84,19 +90,25 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
   ] = useActor(goblinService);
   const [isLoading, setIsLoading] = useState(true);
   const [supply, setSupply] = useState<ItemSupply>();
-  const [showCaptcha, setShowCaptcha] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       const supply = API_URL
         ? await metamask.getInventory().totalSupply()
         : ({} as ItemSupply);
+
+      console.log({ supply });
       setSupply(supply);
 
       setIsLoading(false);
     };
 
     load();
+
+    // Every 5 seconds grab the latest supply
+    const poller = window.setInterval(load, 5 * 1000);
+
+    return () => window.clearInterval(poller);
   }, []);
 
   const inventory = state.inventory;
@@ -129,12 +141,8 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
     return state.balance.lessThan(selected.tokenAmount.mul(amount));
   };
 
-  const craft = () => setShowCaptcha(true);
-
-  const onCaptchaSolved = async (token: string | null) => {
-    await new Promise((res) => setTimeout(res, 1000));
-
-    goblinService.send("MINT", { item: selected.name, captcha: token });
+  const craft = async () => {
+    goblinService.send("MINT", { item: selected.name, captcha: "" });
     onClose();
   };
 
@@ -198,7 +206,8 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
 
     if (soldOut) return null;
 
-    if (hasItemOnFarm)
+    console.log({ selected });
+    if (hasItemOnFarm && !selected.canMintMultiple)
       return (
         <div className="flex flex-col text-center mt-2 border-y border-white w-full">
           <p className="text-[10px] sm:text-sm my-2">Already minted!</p>
@@ -208,7 +217,24 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
         </div>
       );
 
-    if (selected.disabled) {
+    console.log({ selected });
+    const item = CRAFTABLES()[selected.name];
+
+    if (item.requires && !inventory[item.requires]) {
+      return (
+        <div className="flex items-center">
+          <span className="text-xs mt-2">{`Early mint requires `}</span>
+          <img src={ITEM_DETAILS[item.requires].image} className="w-8 ml-2" />
+        </div>
+      );
+    }
+
+    const currentDate = Date.now();
+    const mintReleaseDate = selected.mintReleaseDate;
+    if (
+      (mintReleaseDate && mintReleaseDate > currentDate) ||
+      selected.disabled
+    ) {
       return <span className="text-xs mt-2">Coming soon</span>;
     }
 
@@ -223,26 +249,13 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
         <Button
           disabled={lessFunds() || lessIngredients()}
           className="text-xs mt-1"
-          onClick={craft}
+          onClick={() => craft()}
         >
           Craft
         </Button>
       </>
     );
   };
-
-  if (showCaptcha) {
-    return (
-      <>
-        <ReCAPTCHA
-          sitekey={CONFIG.RECAPTCHA_SITEKEY}
-          onChange={onCaptchaSolved}
-          onExpired={() => setShowCaptcha(false)}
-          className="w-full m-4 flex items-center justify-center"
-        />
-      </>
-    );
-  }
 
   return (
     <div className="flex">
@@ -251,6 +264,7 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
         selected={selected.name}
         inventory={inventory}
         onClick={setSelected}
+        type={type}
       />
       <OuterPanel className="flex-1 min-w-[42%] flex flex-col justify-between items-center">
         <div className="flex flex-col justify-center items-center p-2 relative w-full">
@@ -325,8 +339,8 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
                 );
               })}
 
-              {/* Don't render SFL for war rewards */}
-              {selected.type !== LimitedItemType.WarTentItem &&
+              {/* SFL requirement */}
+              {selected.tokenAmount?.gt(0) &&
                 (selected.isPlaceholder ? (
                   <span className="text-xs">?</span>
                 ) : (
@@ -340,7 +354,7 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
                         }
                       )}
                     >
-                      {`${selected.tokenAmount?.toNumber()} SFL`}
+                      {`$${selected.tokenAmount?.toNumber()}`}
                     </span>
                   </div>
                 ))}

@@ -12,6 +12,8 @@ type Request = {
   fingerprint: string;
   skill: SkillName;
   offset: number;
+  deviceTrackerId: string;
+
   gameState: GameState;
 };
 
@@ -30,6 +32,7 @@ export async function levelUp(request: Request) {
         createdAt: new Date(Date.now() + request.offset).toISOString(),
       },
     ],
+    deviceTrackerId: request.deviceTrackerId as string,
   });
 
   const data = await sanitizeHTTPResponse<{

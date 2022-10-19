@@ -7,6 +7,7 @@ import {
 import { EXPANSION_ORIGINS, LAND_SIZE } from "../../lib/constants";
 import { Coordinates } from "../../components/MapPlacement";
 import {
+  ANIMAL_DIMENSIONS,
   COLLECTIBLES_DIMENSIONS,
   getKeys,
 } from "features/game/types/craftables";
@@ -40,11 +41,13 @@ type Resources = Required<
 
 const getAllResources = (expansions: LandExpansion[]): Resources[] => {
   return expansions.map((expansion) => ({
-    shrubs: expansion.shrubs ?? {},
-    pebbles: expansion.pebbles ?? {},
     trees: expansion.trees ?? {},
+    iron: expansion.iron ?? {},
     stones: expansion.stones ?? {},
     plots: expansion.plots ?? {},
+    gold: expansion.gold ?? {},
+    fruitPatches: expansion.fruitPatches ?? {},
+    mines: expansion.mines ?? {},
   }));
 };
 
@@ -178,6 +181,26 @@ function detectPlaceableCollision(state: GameState, boundingBox: BoundingBox) {
   );
 }
 
+function detectChickenCollision(state: GameState, boundingBox: BoundingBox) {
+  const { chickens } = state;
+
+  const boundingBoxes = getKeys(chickens).flatMap((name) => {
+    const chicken = chickens[name];
+    const dimensions = ANIMAL_DIMENSIONS.Chicken;
+
+    return {
+      x: chicken.coordinates?.x ?? -999,
+      y: chicken.coordinates?.y ?? -999,
+      height: dimensions.height,
+      width: dimensions.width,
+    };
+  });
+
+  return boundingBoxes.some((resourceBoundingBox) =>
+    isOverlapping(boundingBox, resourceBoundingBox)
+  );
+}
+
 enum Direction {
   Left,
   Right,
@@ -295,6 +318,7 @@ export function detectCollision(state: GameState, position: Position) {
     detectWaterCollision(state, position) ||
     detectResourceCollision(state, position) ||
     detectPlaceableCollision(state, position) ||
-    detectLandCornerCollision(state, position)
+    detectLandCornerCollision(state, position) ||
+    detectChickenCollision(state, position)
   );
 }

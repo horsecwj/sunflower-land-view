@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
-import ReCAPTCHA from "react-google-recaptcha";
 import { CONFIG } from "lib/config";
 
 import { Button } from "components/ui/Button";
@@ -22,6 +21,8 @@ import { DEV_BurnLandButton } from "./DEV_BurnLandButton";
 import { useIsNewFarm } from "features/farming/hud/lib/onboarding";
 import { HowToPlay } from "features/farming/hud/components/howToPlay/HowToPlay";
 import { Settings } from "features/farming/hud/components/Settings";
+import { CloudFlareCaptcha } from "components/ui/CloudFlareCaptcha";
+import { CommunityGardenModal } from "features/farming/town/components/CommunityGardenModal";
 
 enum MENU_LEVELS {
   ROOT = "root",
@@ -37,6 +38,8 @@ export const Menu = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showLogoutModal, setShowSettings] = useState(false);
   const [showGoblinModal, setShowGoblinModal] = useState(false);
+  const [showCommunityGardenModal, setShowCommunityGardenModal] =
+    useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(useIsNewFarm());
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [farmURL, setFarmURL] = useState("");
@@ -60,11 +63,16 @@ export const Menu = () => {
   };
 
   const syncOnChain = async () => {
-    setShowCaptcha(true);
+    // setShowCaptcha(true);
+    // setMenuOpen(false);
+
+    gameService.send("SYNC", { captcha: "" });
     setMenuOpen(false);
+    setShowCaptcha(false);
   };
 
   const onCaptchaSolved = async (captcha: string | null) => {
+    console.log({ captcha });
     await new Promise((res) => setTimeout(res, 1000));
 
     gameService.send("SYNC", { captcha });
@@ -157,15 +165,22 @@ export const Menu = () => {
               </li>
             )}
 
-            {/* View menu */}
+            {/* Community menu */}
             {menuLevel === MENU_LEVELS.VIEW && (
               <>
+                <li className="p-1">
+                  <Button
+                    className="flex justify-between"
+                    onClick={() => setShowCommunityGardenModal(true)}
+                  >
+                    <span className="sm:text-sm flex-1">Community Garden</span>
+                  </Button>
+                </li>
                 <li className="p-1">
                   <Button onClick={handleShareClick}>
                     <span className="sm:text-sm">Share</span>
                   </Button>
                 </li>
-
                 <li className="p-1">
                   <Button onClick={visitFarm}>
                     <span className="sm:text-sm">Visit Farm</span>
@@ -202,23 +217,25 @@ export const Menu = () => {
               alt="Close Logout Confirmation Modal"
               onClick={() => setShowCaptcha(false)}
             />
-            <ReCAPTCHA
-              sitekey={CONFIG.RECAPTCHA_SITEKEY}
-              onChange={onCaptchaSolved}
-              onExpired={() => setShowCaptcha(false)}
-              className="w-full m-4 flex items-center justify-center"
+
+            <CloudFlareCaptcha
+              onDone={onCaptchaSolved}
+              onError={() => setShowCaptcha(false)}
+              onExpire={() => setShowCaptcha(false)}
+              action="sync"
             />
           </Panel>
         </Modal>
       )}
 
-      <Modal
-        centered
-        show={showGoblinModal}
-        onHide={() => setShowGoblinModal(false)}
-      >
-        <GoblinVillageModal onClose={() => setShowGoblinModal(false)} />
-      </Modal>
+      <GoblinVillageModal
+        isOpen={showGoblinModal}
+        onClose={() => setShowGoblinModal(false)}
+      />
+      <CommunityGardenModal
+        isOpen={showCommunityGardenModal}
+        onClose={() => setShowCommunityGardenModal(false)}
+      />
     </>
   );
 };

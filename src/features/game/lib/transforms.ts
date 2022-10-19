@@ -7,7 +7,7 @@ import {
   Rock,
   Tree,
 } from "../types/game";
-import { KNOWN_IDS } from "features/game/types";
+import { IDS, KNOWN_IDS } from "features/game/types";
 import { tokenMulNum } from "src/lib/config";
 /**
  * Converts API response into a game state
@@ -187,9 +187,17 @@ export function makeGame(farm: any): GameState {
           })),
         }
       : undefined,
+    grubOrdersFulfilled: farm.grubOrdersFulfilled,
+    grubShop: farm.grubShop
+      ? {
+          ...farm.grubShop,
+          orders: farm.grubShop.orders.map((order: any) => ({
+            ...order,
+            sfl: new Decimal(order.sfl),
+          })),
+        }
+      : undefined,
     tradedAt: farm.tradedAt,
-    shrubs: farm.shrubs,
-    pebbles: farm.pebbles,
     terrains: farm.terrains,
     plots: farm.plots,
     expansions: farm.expansions,
@@ -284,8 +292,10 @@ export function diffGameInventory(
     tempKownIds.push(KNOWN_IDS[keyValue as InventoryItemName]);
     tempKownIdsNumb.push(100000000);
   }
-  // console.log(serializeT(tempKownIds));
-  // console.log(serializeT(tempKownIdsNumb));
+  console.log("transFormTs konwIds");
+  console.log(JSON.stringify(tempKownIds));
+  console.log(JSON.stringify(tempKownIdsNumb));
+  console.log(JSON.stringify(IDS));
 
   //
 
@@ -363,12 +373,10 @@ export function updateGame(
         };
       }, {} as Record<number, Tree>),
       stones: updateRocks(oldGameState.stones, newGameState.stones),
-      pebbles: newGameState.pebbles,
       iron: updateRocks(oldGameState.iron, newGameState.iron),
       gold: updateRocks(oldGameState.gold, newGameState.gold),
       skills: newGameState.skills,
       chickens: newGameState.chickens,
-      shrubs: newGameState.shrubs,
     };
   } catch (e) {
     console.log({ e });

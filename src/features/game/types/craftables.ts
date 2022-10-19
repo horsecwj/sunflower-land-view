@@ -63,6 +63,14 @@ export interface CraftableItem {
    * This is to reduce people viewing placeholder development code and assuming that is the price/buff
    */
   isPlaceholder?: boolean;
+  bumpkinLevel?: number;
+  canMintMultiple?: boolean;
+  /**
+   * Date the item will be craftable in milliseconds
+   * Date.UTC(YEAR, MONTH, DAY, HOUR?, MINUTE?, SECONDS?, MS?)
+   * REMEMBER MONTHS START IN 0, 0 = JAN, 1 = FEB...
+   */
+  mintReleaseDate?: number;
 }
 
 export type MutantChicken = "Speed Chicken" | "Rich Chicken" | "Fat Chicken";
@@ -73,6 +81,7 @@ export interface LimitedItem extends CraftableItem {
   cooldownSeconds?: number;
   mintedAt?: number;
   type?: LimitedItemType;
+  requires?: InventoryItemName;
 }
 
 export type MOMEventItem = "Engine Core" | "Observatory";
@@ -133,8 +142,11 @@ export type WarTentItem =
   | "Warrior Shirt"
   | "Warrior Pants"
   | "Warrior Helmet"
-  | "Reward 8"
-  | "Reward 9";
+  | "Sunflower Shield"
+  | "Skull Hat"
+  | "War Skull"
+  | "War Tombstone"
+  | "Undead Rooster";
 
 export type LimitedItemName =
   | BlacksmithItem
@@ -151,7 +163,10 @@ export type CollectibleName =
   | BarnItem
   | MarketItem
   | Flag
-  | TravelingSalesmanItem;
+  | TravelingSalesmanItem
+  | MutantChicken
+  | "War Skull"
+  | "War Tombstone";
 
 export type Tool =
   | "Axe"
@@ -437,7 +452,7 @@ export const TOOLS: Record<Tool, CraftableItem> = {
     name: "Axe",
     description: "Used to collect wood",
     // Temporary price for weekly war challenge
-    tokenAmount: new Decimal(0.5),
+    tokenAmount: new Decimal(1),
     ingredients: [],
   },
   Pickaxe: {
@@ -583,55 +598,63 @@ export const WAR_TENT_ITEMS: Record<WarTentItem, LimitedItem> = {
     name: "Sunflower Amulet",
     description: "10% increased Sunflower yield",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Carrot Amulet": {
     name: "Carrot Amulet",
     description: "Carrots grow 20% faster",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Beetroot Amulet": {
     name: "Beetroot Amulet",
     description: "20% increased Beetroot yield",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Green Amulet": {
     name: "Green Amulet",
     description: "Chance for 10x crop yield",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Warrior Shirt": {
     name: "Warrior Shirt",
     description: "A mark of a true warrior",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Warrior Pants": {
     name: "Warrior Pants",
-    description: "Protect your thighs!",
+    description: "Protect your thighs",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
   "Warrior Helmet": {
     name: "Warrior Helmet",
     description: "Immune to arrows",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
-  "Reward 8": {
-    name: "Reward 8",
-    description: "A rare item",
+  "Sunflower Shield": {
+    name: "Sunflower Shield",
+    description: "A hero of Sunflower Land. Free Sunflower Seeds!",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
   },
-  "Reward 9": {
-    name: "Reward 9",
-    description: "A rare item",
+  "Skull Hat": {
+    name: "Skull Hat",
+    description: "A rare hat for your Bumpkin.",
     type: LimitedItemType.WarTentItem,
-    disabled: true,
+  },
+  "War Skull": {
+    name: "War Skull",
+    description: "Decorate the land with the bones of your enemies.",
+    type: LimitedItemType.WarTentItem,
+    canMintMultiple: true,
+  },
+  "War Tombstone": {
+    name: "War Tombstone",
+    description: "R.I.P",
+    type: LimitedItemType.WarTentItem,
+    canMintMultiple: true,
+  },
+  "Undead Rooster": {
+    name: "Undead Rooster",
+    description: "An unfortunate casualty of the war. 10% increased egg yield.",
+    type: LimitedItemType.WarTentItem,
   },
 };
 
@@ -1008,6 +1031,8 @@ export const makeLimitedItemsByName = (
         type: items[name].type,
         disabled: !enabled,
         isPlaceholder: items[name].isPlaceholder || isNewItem,
+        canMintMultiple: items[name].canMintMultiple,
+        mintReleaseDate: items[name].mintReleaseDate || 0,
       };
     }
 
@@ -1101,4 +1126,18 @@ export const COLLECTIBLES_DIMENSIONS: Record<CollectibleName, Dimensions> = {
   "Easter Bunny": { width: 2, height: 1 },
   Rooster: { height: 1, width: 1 },
   "Egg Basket": { height: 1, width: 1 },
+  "War Skull": { height: 1, width: 1 },
+  "War Tombstone": { height: 1, width: 1 },
+
+  // Mutant Chickens
+  "Fat Chicken": { height: 1, width: 1 },
+  "Rich Chicken": { height: 1, width: 1 },
+  "Speed Chicken": { height: 1, width: 1 },
+};
+
+export const ANIMAL_DIMENSIONS: Record<"Chicken", Dimensions> = {
+  Chicken: {
+    height: 1,
+    width: 1,
+  },
 };

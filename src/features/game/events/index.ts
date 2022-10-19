@@ -26,11 +26,23 @@ import {
   mineStone as landExpansionMineStone,
   LandExpansionStoneMineAction,
 } from "./landExpansion/stoneMine";
+import {
+  mineGold as landExpansionMineGold,
+  LandExpansionMineGoldAction,
+} from "./landExpansion/mineGold";
+
+import {
+  mineIron as landExpansionIronMine,
+  LandExpansionIronMineAction,
+} from "./landExpansion/ironMine";
+
+import {
+  feedChicken as LandExpansionFeedChicken,
+  LandExpansionFeedChickenAction,
+} from "./landExpansion/feedChicken";
 
 import { GameState } from "../types/game";
 import { trade, TradeAction } from "./trade";
-import { PebbleStrikeAction, strikePebble } from "./landExpansion/pebbleStrike";
-import { chopShrub, ChopShrubAction } from "./chopShrub";
 import { reveal, RevealAction } from "./revealExpansion";
 import { fertiliseCrop, FertiliseCropAction } from "./fertiliseCrop";
 import { claimAirdrop, ClaimAirdropAction } from "./claimAirdrop";
@@ -55,6 +67,18 @@ import {
 } from "./landExpansion/collectRecipe";
 import { feedBumpkin, FeedBumpkinAction } from "./landExpansion/feedBumpkin";
 import { detectBot, DetectBotAction } from "./detectBot";
+import { pickSkill, PickSkillAction } from "./landExpansion/pickSkill";
+import { seedBought, SeedBoughtAction } from "./seedBought";
+import {
+  claimAchievement,
+  ClaimAchievementAction,
+} from "./landExpansion/claimAchievement";
+import { buyChicken, BuyChickenAction } from "./landExpansion/buyChicken";
+import { placeChicken, PlaceChickenAction } from "./landExpansion/placeChicken";
+import {
+  fulfillGrubOrder,
+  FulFillGrubOrderAction,
+} from "./landExpansion/fulfillGrubOrder";
 
 export type PlayingEvent =
   | CraftAction
@@ -74,9 +98,9 @@ export type PlayingEvent =
   | LandExpansionHarvestAction
   | LandExpansionChopAction
   | LandExpansionStoneMineAction
-  | PebbleStrikeAction
+  | LandExpansionIronMineAction
+  | LandExpansionMineGoldAction
   | TradeAction
-  | ChopShrubAction
   | RevealAction
   | FertiliseCropAction
   | ClaimAirdropAction
@@ -85,12 +109,19 @@ export type PlayingEvent =
   | RecipeCookedAction
   | CollectRecipeAction
   | FeedBumpkinAction
-  | DetectBotAction;
+  | DetectBotAction
+  | PickSkillAction
+  | SeedBoughtAction
+  | ClaimAchievementAction
+  | FulFillGrubOrderAction
+  | LandExpansionFeedChickenAction;
 
 export type PlacementEvent =
   | ConstructBuildingAction
   | PlaceBuildingAction
-  | PlaceCollectibleAction;
+  | PlaceCollectibleAction
+  | BuyChickenAction
+  | PlaceChickenAction;
 
 export type GameEvent = PlayingEvent | PlacementEvent;
 export type GameEventName<T> = Extract<T, { type: string }>["type"];
@@ -127,21 +158,28 @@ export const PLAYING_EVENTS: Handlers<PlayingEvent> = {
   // Land Expansion Handlers
   "seed.planted": landExpansionPlant,
   "crop.harvested": landExpansionHarvest,
-  "pebble.struck": strikePebble,
-  "shrub.chopped": chopShrub,
+  "stoneRock.mined": landExpansionMineStone,
+  "ironRock.mined": landExpansionIronMine,
+  "goldRock.mined": landExpansionMineGold,
   "expansion.revealed": reveal,
   "timber.chopped": landExpansionChop,
-  "rock.mined": landExpansionMineStone,
   "item.fertilised": fertiliseCrop,
   "recipe.cooked": cook,
   "recipe.collected": collectRecipe,
   "bumpkin.feed": feedBumpkin,
+  "skill.picked": pickSkill,
+  "seed.bought": seedBought,
+  "achievement.claimed": claimAchievement,
+  "grubOrder.fulfilled": fulfillGrubOrder,
+  "chicken.fed": LandExpansionFeedChicken,
 };
 
 export const PLACEMENT_EVENTS: Handlers<PlacementEvent> = {
   "building.constructed": constructBuilding,
   "building.placed": placeBuilding,
   "collectible.placed": placeCollectible,
+  "chicken.bought": buyChicken,
+  "chicken.placed": placeChicken,
 };
 
 export const EVENTS = { ...PLAYING_EVENTS, ...PLACEMENT_EVENTS };

@@ -1,11 +1,12 @@
 import { CHICKEN_TIME_TO_EGG } from "features/game/lib/constants";
+import { randomInt } from "lib/utils/random";
 import { assign, createMachine, Interpreter, State } from "xstate";
 
 export interface ChickenContext {
   timeElapsed: number;
   timeToEgg: number;
   timeInCurrentState: number;
-  fedAt: number;
+  fedAt?: number;
 }
 
 export type ChickenState = {
@@ -40,18 +41,14 @@ export type MachineInterpreter = Interpreter<
   ChickenState
 >;
 
-function getRndInteger(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 const assignRandomTimeInState = assign<ChickenContext, any>({
-  timeInCurrentState: (context) => context.timeElapsed + getRndInteger(7, 21),
+  timeInCurrentState: (context) => context.timeElapsed + randomInt(7, 22),
 });
 
 const reset = assign<ChickenContext, any>({
   timeElapsed: 0,
   timeInCurrentState: 0,
-  fedAt: 0,
+  fedAt: undefined,
 });
 
 const assignFeedDetails = assign<ChickenContext, ChickenFeedEvent>({
@@ -62,7 +59,7 @@ const assignTimeElapsed = assign<ChickenContext, any>({
   timeElapsed: (context) => {
     const now = Date.now();
 
-    return Math.floor((+now - context.fedAt) / 1000);
+    return Math.floor((+now - (context.fedAt as number)) / 1000);
   },
 });
 
@@ -77,14 +74,13 @@ export const chickenMachine = createMachine<
       timeElapsed: 0,
       timeInCurrentState: 0,
       timeToEgg: CHICKEN_TIME_TO_EGG / 1000, // seconds
-      fedAt: 0,
     },
     states: {
       loading: {
         always: [
           {
             target: "hungry",
-            cond: (context) => !context.fedAt,
+            cond: (context) => isNaN(context.fedAt as number),
           },
           {
             target: "eggReady",

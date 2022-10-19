@@ -1,14 +1,16 @@
 import React, { useContext, useLayoutEffect } from "react";
 import { Section, useScrollIntoView } from "lib/utils/hooks/useScrollIntoView";
-import { MapPlacement } from "./components/MapPlacement";
+import { Coordinates, MapPlacement } from "./components/MapPlacement";
 import { useActor } from "@xstate/react";
 import { Context } from "../GameProvider";
 import { getTerrainImageByKey } from "../lib/getTerrainImageByKey";
-import { COLLECTIBLES_DIMENSIONS, getKeys } from "../types/craftables";
-import { Plot } from "features/farming/crops/components/landExpansion/Plot";
+import { Plot } from "features/island/Plots/Plot";
+import {
+  ANIMAL_DIMENSIONS,
+  COLLECTIBLES_DIMENSIONS,
+  getKeys,
+} from "../types/craftables";
 import { Tree } from "./components/resources/Tree";
-import { Pebble } from "./components/resources/Pebble";
-import { Shrub } from "./components/resources/Shrub";
 import { LandBase } from "./components/LandBase";
 import { UpcomingExpansion } from "./components/UpcomingExpansion";
 import { LandExpansion } from "../types/game";
@@ -18,23 +20,40 @@ import { Stone } from "./components/resources/Stone";
 import { Placeable } from "./placeable/Placeable";
 import { BuildingName, BUILDINGS_DIMENSIONS } from "../types/buildings";
 import { Building } from "features/island/buildings/components/building/Building";
-import { ITEM_DETAILS } from "../types/images";
 import { Character } from "features/island/bumpkin/components/Character";
+import { Gold } from "./components/resources/Gold";
+import { Iron } from "./components/resources/Iron";
+import { Chicken } from "features/island/chickens/Chicken";
+import { Collectible } from "features/island/collectibles/Collectible";
+import { LAND_WIDTH, Water } from "./components/Water";
+import { FruitPatch } from "features/island/fruit/FruitPatch";
+import { Mine } from "features/island/mines/Mine";
+import { IslandTravel } from "./components/IslandTravel";
 
 type ExpansionProps = Pick<
   LandExpansion,
-  "shrubs" | "plots" | "trees" | "terrains" | "pebbles" | "stones" | "createdAt"
+  | "plots"
+  | "trees"
+  | "terrains"
+  | "stones"
+  | "iron"
+  | "gold"
+  | "createdAt"
+  | "fruitPatches"
+  | "mines"
 >;
 
 export const Expansion: React.FC<
   ExpansionProps & { expansionIndex: number }
 > = ({
-  shrubs,
   plots,
   trees,
   stones,
+  iron,
+  gold,
   terrains,
-  pebbles,
+  fruitPatches,
+  mines,
   createdAt,
   expansionIndex,
 }) => {
@@ -42,36 +61,19 @@ export const Expansion: React.FC<
 
   return (
     <>
-      {shrubs &&
-        getKeys(shrubs).map((index) => {
-          const { x, y, width, height } = shrubs[index];
+      {gold &&
+        getKeys(gold).map((index) => {
+          const { x, y, width, height } = gold[index];
 
           return (
             <MapPlacement
-              key={`${createdAt}-shrub-${index}`}
+              key={`${createdAt}-gold-${index}`}
               x={x + xOffset}
               y={y + yOffset}
               height={height}
               width={width}
             >
-              <Shrub shrubIndex={index} expansionIndex={expansionIndex} />
-            </MapPlacement>
-          );
-        })}
-
-      {pebbles &&
-        getKeys(pebbles).map((index) => {
-          const { x, y, width, height } = pebbles[index];
-
-          return (
-            <MapPlacement
-              key={`${createdAt}-pebble-${index}`}
-              x={x + xOffset}
-              y={y + yOffset}
-              height={height}
-              width={width}
-            >
-              <Pebble pebbleIndex={index} expansionIndex={expansionIndex} />
+              <Gold rockIndex={Number(index)} expansionIndex={expansionIndex} />
             </MapPlacement>
           );
         })}
@@ -146,6 +148,57 @@ export const Expansion: React.FC<
             </MapPlacement>
           );
         })}
+
+      {iron &&
+        getKeys(iron).map((index) => {
+          const { x, y, width, height } = iron[index];
+
+          return (
+            <MapPlacement
+              key={`${createdAt}-iron-${index}`}
+              x={x + xOffset}
+              y={y + yOffset}
+              height={height}
+              width={width}
+            >
+              <Iron ironIndex={Number(index)} expansionIndex={expansionIndex} />
+            </MapPlacement>
+          );
+        })}
+
+      {fruitPatches &&
+        getKeys(fruitPatches).map((index) => {
+          const { x, y, width, height, fruit } = fruitPatches[index];
+
+          return (
+            <MapPlacement
+              key={`${createdAt}-fruit-${index}`}
+              x={x + xOffset}
+              y={y + yOffset}
+              height={height}
+              width={width}
+            >
+              <FruitPatch fruit={fruit?.name} />
+            </MapPlacement>
+          );
+        })}
+
+      {mines &&
+        getKeys(mines).map((index) => {
+          const { x, y, width, height } = mines[index];
+
+          return (
+            <MapPlacement
+              key={`${createdAt}-fruit-${index}`}
+              x={x + xOffset}
+              y={y + yOffset}
+              height={height}
+              width={width}
+            >
+              <Mine />
+            </MapPlacement>
+          );
+        })}
     </>
   );
 };
@@ -155,7 +208,9 @@ export const Land: React.FC = () => {
   const [gameState] = useActor(gameService);
   const { state } = gameState.context;
 
-  const { expansions, buildings, collectibles } = state;
+  const { expansions, buildings, collectibles, chickens, bumpkin } = state;
+  const level = expansions.length + 1;
+  const offset = Math.floor(Math.sqrt(level)) * LAND_WIDTH;
 
   const [scrollIntoView] = useScrollIntoView();
 
@@ -165,6 +220,9 @@ export const Land: React.FC = () => {
 
   return (
     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute z-0 w-full h-full">
+        <Water level={level} />
+      </div>
       <div className="relative w-full h-full">
         <LandBase expansions={expansions} />
         <UpcomingExpansion gameState={state} />
@@ -173,19 +231,31 @@ export const Land: React.FC = () => {
           .filter((expansion) => expansion.readyAt < Date.now())
           .map(
             (
-              { shrubs, pebbles, stones, terrains, trees, plots, createdAt },
+              {
+                stones,
+                gold,
+                terrains,
+                iron,
+                trees,
+                plots,
+                createdAt,
+                fruitPatches,
+                mines,
+              },
               index
             ) => (
               <Expansion
                 createdAt={createdAt}
                 expansionIndex={index}
                 key={index}
-                shrubs={shrubs}
-                pebbles={pebbles}
                 stones={stones}
+                gold={gold}
                 terrains={terrains}
                 trees={trees}
+                iron={iron}
                 plots={plots}
+                fruitPatches={fruitPatches}
+                mines={mines}
               />
             )
           )}
@@ -193,7 +263,7 @@ export const Land: React.FC = () => {
         {gameState.matches("editing") && <Placeable />}
 
         {gameState.context.state.bumpkin?.equipped && (
-          <MapPlacement x={2} y={1}>
+          <MapPlacement x={2} y={-1}>
             <Character
               body={gameState.context.state.bumpkin.equipped.body}
               hair={gameState.context.state.bumpkin.equipped.hair}
@@ -202,6 +272,8 @@ export const Land: React.FC = () => {
             />
           </MapPlacement>
         )}
+
+        <IslandTravel bumpkin={bumpkin} x={offset - 2} y={0} />
 
         {getKeys(buildings).flatMap((name) => {
           const items = buildings[name];
@@ -241,13 +313,34 @@ export const Land: React.FC = () => {
                 height={height}
                 width={width}
               >
-                <div className="flex justify-center w-full h-full">
-                  <img src={ITEM_DETAILS[name].image} alt={name} />
-                </div>
+                <Collectible name={name} id={collectible.id} />
               </MapPlacement>
             );
           });
         })}
+
+        {getKeys(chickens)
+          // Only show placed chickens (V1 may have ones without coords)
+          .filter((index) => chickens[index].coordinates)
+          .flatMap((index) => {
+            const chicken = chickens[index];
+            const { x, y } = chicken.coordinates as Coordinates;
+            const { width, height } = ANIMAL_DIMENSIONS.Chicken;
+
+            return (
+              <MapPlacement
+                key={index}
+                x={x}
+                y={y}
+                height={height}
+                width={width}
+              >
+                <div className="flex relative justify-center w-full h-full">
+                  <Chicken index={index} />
+                </div>
+              </MapPlacement>
+            );
+          })}
       </div>
     </div>
   );

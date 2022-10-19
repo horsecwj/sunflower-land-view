@@ -12,7 +12,8 @@ export type CropName =
   | "Cauliflower"
   | "Parsnip"
   | "Radish"
-  | "Wheat";
+  | "Wheat"
+  | "Kale";
 
 export type Crop = {
   buyPrice: Decimal;
@@ -99,6 +100,13 @@ export const CROPS: () => Record<CropName, Crop> = () => ({
     name: "Wheat",
     description: "The most harvested crop in the world.",
   },
+  Kale: {
+    buyPrice: marketRate(5),
+    sellPrice: marketRate(6.5),
+    harvestSeconds: 3 * 60 * 60,
+    name: "Kale",
+    description: "Bumpkin Power Food",
+  },
 });
 
 export type SeedName = `${CropName} Seed`;
@@ -121,6 +129,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     description: "There's more to pumpkin than pie.",
     tokenAmount: marketRate(0.2),
     ingredients: [],
+    bumpkinLevel: 2,
   },
   "Carrot Seed": {
     name: "Carrot Seed",
@@ -128,6 +137,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(0.5),
     ingredients: [],
     requires: "Pumpkin Soup",
+    bumpkinLevel: 2,
   },
   "Cabbage Seed": {
     name: "Cabbage Seed",
@@ -135,6 +145,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(1),
     ingredients: [],
     requires: "Pumpkin Soup",
+    bumpkinLevel: 2,
   },
   "Beetroot Seed": {
     name: "Beetroot Seed",
@@ -142,6 +153,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(2),
     ingredients: [],
     requires: "Sauerkraut",
+    bumpkinLevel: 3,
   },
   "Cauliflower Seed": {
     name: "Cauliflower Seed",
@@ -149,6 +161,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(3),
     ingredients: [],
     requires: "Sauerkraut",
+    bumpkinLevel: 3,
   },
   "Parsnip Seed": {
     name: "Parsnip Seed",
@@ -156,6 +169,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(5),
     ingredients: [],
     requires: "Roasted Cauliflower",
+    bumpkinLevel: 4,
   },
   "Radish Seed": {
     name: "Radish Seed",
@@ -163,6 +177,7 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(7),
     ingredients: [],
     requires: "Roasted Cauliflower",
+    bumpkinLevel: 4,
   },
   "Wheat Seed": {
     name: "Wheat Seed",
@@ -170,5 +185,14 @@ export const SEEDS: () => Record<SeedName, CraftableItem> = () => ({
     tokenAmount: marketRate(5),
     ingredients: [],
     requires: "Radish Pie",
+    bumpkinLevel: 5,
+  },
+  "Kale Seed": {
+    name: "Kale Seed",
+    tokenAmount: marketRate(5),
+    ingredients: [],
+    description: "A Bumpkin Power Food!",
+    plantSeconds: 24 * 60 * 60,
+    disabled: true,
   },
 });

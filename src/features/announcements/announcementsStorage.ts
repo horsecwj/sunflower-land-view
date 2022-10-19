@@ -11,16 +11,11 @@ export const PAST_ANNOUNCEMENTS = SORTED_ANNOUNCEMENTS.filter(
 
 export function hasAnnouncements() {
   const lastRead = getAnnouncementLastRead();
-  let flag = false;
-  if (lastRead) {
-    flag = new Date(lastRead) < PAST_ANNOUNCEMENTS[0].date;
-  } else {
-    flag = true;
-  }
-  console.log("i am in hasAnnouceMents return,return flag is  ", flag);
-  return flag;
-}
 
+  if (lastRead) {
+    return new Date(lastRead) < PAST_ANNOUNCEMENTS[0].date;
+  } else return true;
+}
 export function getAnnouncements() {
   const storedDate = getAnnouncementLastRead();
 
@@ -41,4 +36,17 @@ export function acknowledgeRead() {
     "announcementLastRead",
     PAST_ANNOUNCEMENTS[0].date.toISOString()
   );
+}
+
+export function getGameRulesLastRead(): Date | null {
+  const value = localStorage.getItem("gameRulesLastRead");
+  if (!value) {
+    return null;
+  }
+
+  return new Date(value);
+}
+
+export function acknowledgeGameRules() {
+  return localStorage.setItem("gameRulesLastRead", new Date().toISOString());
 }

@@ -3,11 +3,9 @@ import { useActor } from "@xstate/react";
 import { Modal } from "react-bootstrap";
 import classNames from "classnames";
 import Decimal from "decimal.js-light";
-import ReCAPTCHA from "react-google-recaptcha";
-import { CONFIG } from "lib/config";
 
-import token from "assets/icons/token.gif";
-import tokenStatic from "assets/icons/token.png";
+import token from "assets/icons/token_2.png";
+import tokenStatic from "assets/icons/token_2.png";
 
 import { Box } from "components/ui/Box";
 import { OuterPanel, Panel } from "components/ui/Panel";
@@ -20,6 +18,7 @@ import { InventoryItemName } from "features/game/types/game";
 import { Stock } from "components/ui/Stock";
 import { getBuyPrice } from "features/game/events/craft";
 import { getMaxChickens } from "features/game/events/feedChicken";
+import { CloudFlareCaptcha } from "components/ui/CloudFlareCaptcha";
 
 interface Props {
   items: Partial<Record<InventoryItemName, CraftableItem>>;
@@ -62,6 +61,7 @@ export const CraftingItems: React.FC<Props> = ({
   };
 
   const craft = (amount = 1) => {
+    console.log("i am in craft");
     gameService.send("item.crafted", {
       item: selected.name,
       amount,
@@ -91,8 +91,15 @@ export const CraftingItems: React.FC<Props> = ({
     onClose();
   };
 
+  const sync = () => {
+    gameService.send("SYNC", { captcha: "" });
+
+    onClose();
+  };
+
   const restock = () => {
-    setShowCaptcha(true);
+    // setShowCaptcha(true);
+    sync();
   };
   // ask confirmation if crafting more than 10
   const openConfirmationModal = () => {
@@ -108,11 +115,11 @@ export const CraftingItems: React.FC<Props> = ({
   };
   if (showCaptcha) {
     return (
-      <ReCAPTCHA
-        sitekey={CONFIG.RECAPTCHA_SITEKEY}
-        onChange={onCaptchaSolved}
-        onExpired={() => setShowCaptcha(false)}
-        className="w-full m-4 flex items-center justify-center"
+      <CloudFlareCaptcha
+        action="carfting-sync"
+        onDone={onCaptchaSolved}
+        onExpire={() => setShowCaptcha(false)}
+        onError={() => setShowCaptcha(false)}
       />
     );
   }
@@ -270,16 +277,22 @@ export const CraftingItems: React.FC<Props> = ({
               );
             })}
 
-            <div className="flex justify-center items-end">
-              <img src={token} className="h-5 mr-1" />
-              <span
-                className={classNames("text-xs text-shadow text-center mt-2 ", {
-                  "text-red-500": lessFunds(),
-                })}
-              >
-                {`$${price?.toNumber()}`}
-              </span>
-            </div>
+            {/* SFL requirement */}
+            {price?.gt(0) && (
+              <div className="flex justify-center items-end">
+                <img src={token} className="h-5 mr-1" />
+                <span
+                  className={classNames(
+                    "text-xs text-shadow text-center mt-2 ",
+                    {
+                      "text-red-500": lessFunds(),
+                    }
+                  )}
+                >
+                  {`$${price?.toNumber()}`}
+                </span>
+              </div>
+            )}
           </div>
           {Action()}
         </div>

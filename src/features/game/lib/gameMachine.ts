@@ -41,7 +41,6 @@ import { editingMachine } from "../expansion/placeable/editingMachine";
 import { BuildingName } from "../types/buildings";
 import { Context } from "../GameProvider";
 import { InitialBumpkinParts, mintBumpkin } from "../actions/mintBumpkin";
-import { isSwarming } from "../events/detectBot";
 
 export type PastAction = GameEvent & {
   createdAt: Date;
@@ -60,6 +59,8 @@ export interface Context {
   notifications?: OnChainEvent[];
   maxedItem?: InventoryItemName | "SFL";
   goblinSwarm?: Date;
+  deviceTrackerId?: string;
+  status?: "COOL_DOWN";
 }
 
 type MintEvent = {
@@ -213,7 +214,8 @@ export type BlockchainState = {
   value:
     | "loading"
     | "announcing"
-    | "notifying"
+    | "deposited"
+    | "gameRules"
     | "playing"
     | "autosaving"
     | "syncing"
@@ -228,7 +230,8 @@ export type BlockchainState = {
     | "editing"
     | "noBumpkinFound"
     | "mintingBumpkin"
-    | "bumpkinMinted";
+    | "bumpkinMinted"
+    | "coolingDown";
   context: Context;
 };
 
@@ -305,13 +308,22 @@ export function startGame(authContext: Options) {
                   throw new Error("NO_FARM");
                 }
 
-                const { game, offset, whitelistedAt, itemsMintedAt } = response;
+                const {
+                  game,
+                  offset,
+                  whitelistedAt,
+                  itemsMintedAt,
+                  deviceTrackerId,
+                  status,
+                } = response;
                 console.log(
                   "game, offset, whitelistedAt, itemsMintedAt",
                   game,
                   offset,
                   whitelistedAt,
-                  itemsMintedAt
+                  itemsMintedAt,
+                  deviceTrackerId,
+                  status
                 );
 
                 // add farm address
@@ -330,6 +342,8 @@ export function startGame(authContext: Options) {
                   onChain,
                   owner,
                   notifications: onChainEvents,
+                  deviceTrackerId,
+                  status,
                 };
               }
 
@@ -347,19 +361,26 @@ export function startGame(authContext: Options) {
                 actions: "assignGame",
               },
               {
-                target: "swarming",
-                cond: () => isSwarming(),
-                actions: "assignGame",
-              },
-              {
-                target: "noBumpkinFound",
-                cond: (_, event) =>
-                  !event.data?.state.bumpkin &&
-                  window.location.hash.includes("/land"),
+                target: "mintingBumpkin",
+                cond: (_, event) => {
+                  console.log(
+                    "noBumpkinFound",
+                    !event.data?.state.bumpkin &&
+                      window.location.hash.includes("/land")
+                  );
+                  return (
+                    !event.data?.state.bumpkin &&
+                    window.location.hash.includes("/land")
+                  );
+                },
                 actions: "assignGame",
               },
               {
                 target: "playing",
+                cond: (_, event) => {
+                  console.log("playing");
+                  return true;
+                },
                 actions: "assignGame",
               },
             ],
@@ -372,6 +393,10 @@ export function startGame(authContext: Options) {
         noBumpkinFound: {
           on: {
             MINT_BUMPKIN: {
+              cond: (_, event) => {
+                console.log("noBumpkinFound");
+                return true;
+              },
               target: "mintingBumpkin",
             },
           },
@@ -490,6 +515,8 @@ export function startGame(authContext: Options) {
                 token: authContext.rawToken as string,
                 offset: context.offset,
                 fingerprint: context.fingerprint as string,
+                deviceTrackerId: context.deviceTrackerId as string,
+
                 gameState: context.state,
               });
               //这使 UI 有时间在单击保存和自动保存时指示正在进行保存
@@ -539,6 +566,7 @@ export function startGame(authContext: Options) {
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
                   gameState: context.state,
+                  deviceTrackerId: context.deviceTrackerId as string,
                 });
               }
 
@@ -590,6 +618,7 @@ export function startGame(authContext: Options) {
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
                   gameState: context.state,
+                  deviceTrackerId: context.deviceTrackerId as string,
                 });
               }
 
@@ -601,6 +630,7 @@ export function startGame(authContext: Options) {
                 skill: (event as LevelUpEvent).skill,
                 offset: context.offset,
                 gameState: context.state,
+                deviceTrackerId: context.deviceTrackerId as string,
               });
 
               return {
@@ -695,6 +725,7 @@ export function startGame(authContext: Options) {
                   offset: context.offset,
                   fingerprint: context.fingerprint as string,
                   gameState: context.state,
+                  deviceTrackerId: context.deviceTrackerId as string,
                 });
               }
 
@@ -801,6 +832,8 @@ export function startGame(authContext: Options) {
           fingerprint: (_, event) => event.data.fingerprint,
           itemsMintedAt: (_, event) => event.data.itemsMintedAt,
           notifications: (_, event) => event.data.notifications,
+          deviceTrackerId: (_, event) => event.data.deviceTrackerId,
+          status: (_, event) => event.data.status,
         }),
       },
     }

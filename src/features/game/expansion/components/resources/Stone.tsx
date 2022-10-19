@@ -4,14 +4,14 @@ import Spritesheet, {
   SpriteSheetInstance,
 } from "components/animation/SpriteAnimator";
 
-import sparkSheet from "assets/resources/stone/stone_spark.png";
-import dropSheet from "assets/resources/stone/stone_drop.png";
-import hitbox from "assets/resources/stone/stone_hitbox.png";
+import sparkSheet from "assets/resources/stone/stone_rock_spark.png";
+import dropSheet from "assets/resources/stone/stone_rock_drop.png";
+import hitbox from "assets/resources/small_stone.png";
 import stone from "assets/resources/stone.png";
 import pickaxe from "assets/tools/wood_pickaxe.png";
 
 import {
-  PIXEL_SCALE,
+  GRID_WIDTH_PX,
   STONE_MINE_STAMINA_COST,
 } from "features/game/lib/constants";
 import { Context } from "features/game/GameProvider";
@@ -20,24 +20,16 @@ import classNames from "classnames";
 import { useActor } from "@xstate/react";
 
 import { getTimeLeft } from "lib/utils/time";
-import { Label } from "components/ui/Label";
 import { miningAudio, miningFallAudio } from "lib/utils/sfx";
 import { HealthBar } from "components/ui/HealthBar";
-import { TimeLeftPanel } from "components/ui/TimeLeftPanel";
 import { LandExpansionRock } from "features/game/types/game";
-import {
-  canMine,
-  STONE_RECOVERY_TIME,
-} from "features/game/events/landExpansion/stoneMine";
+import { STONE_RECOVERY_TIME } from "features/game/events/landExpansion/stoneMine";
 import { MINE_ERRORS } from "features/game/events/stoneMine";
 import { calculateBumpkinStamina } from "features/game/events/landExpansion/replenishStamina";
+import { TimeLeftOverlay } from "components/ui/TimeLeftOverlay";
 import { Overlay } from "react-bootstrap";
-
-const SPARK_SHEET_FRAME_WIDTH = 455 / 5;
-const SPARK_SHEET_FRAME_HEIGHT = 66;
-
-const DROP_SHEET_FRAME_WIDTH = 637 / 7;
-const DROP_SHEET_FRAME_HEIGHT = 66;
+import { Label } from "components/ui/Label";
+import { canMine } from "../../lib/utils";
 
 const POPOVER_TIME_MS = 1000;
 const HITS = 3;
@@ -56,9 +48,10 @@ export const Stone: React.FC<Props> = ({ rockIndex, expansionIndex }) => {
   const [popover, setPopover] = useState<JSX.Element | null>();
 
   const [touchCount, setTouchCount] = useState(0);
-  // When to hide the wood that pops out
+  // When to hide the stone that pops out
   const [collecting, setCollecting] = useState(false);
 
+  const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const sparkGif = useRef<SpriteSheetInstance>();
   const minedGif = useRef<SpriteSheetInstance>();
@@ -94,7 +87,7 @@ export const Stone: React.FC<Props> = ({ rockIndex, expansionIndex }) => {
   }, []);
 
   // Users will need to refresh to strike the rock again
-  const mined = !canMine(rock);
+  const mined = !canMine(rock, STONE_RECOVERY_TIME);
 
   const displayPopover = async (element: JSX.Element) => {
     setPopover(element);
@@ -136,7 +129,7 @@ export const Stone: React.FC<Props> = ({ rockIndex, expansionIndex }) => {
     setTouchCount(0);
 
     try {
-      gameService.send("rock.mined", {
+      gameService.send("stoneRock.mined", {
         index: rockIndex,
         expansionIndex,
       });
@@ -198,49 +191,41 @@ export const Stone: React.FC<Props> = ({ rockIndex, expansionIndex }) => {
   const timeLeft = getTimeLeft(rock.stone.minedAt, STONE_RECOVERY_TIME);
 
   return (
-    <div className="relative z-10 group w-full h-full" ref={containerRef}>
-      <img
-        src={hitbox}
-        style={{
-          width: `${22 * PIXEL_SCALE}px`,
-          opacity: 0.3,
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        className="absolute z-10 cursor-pointer"
-        onMouseEnter={handleHover}
-        onMouseLeave={handleMouseLeave}
-        onClick={strike}
-      />
-
-      <div className="absolute z-20 pointer-events-none w-full h-full">
-        {!mined && (
+    <div
+      ref={overlayRef}
+      className="relative z-10"
+      style={{ height: "40px" }}
+      onMouseEnter={handleHover}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Unmined stone which is strikeable */}
+      {!mined && (
+        <div
+          ref={containerRef}
+          className="group cursor-pointer w-full h-full"
+          onClick={strike}
+        >
           <>
             <Spritesheet
-              className="relative group-hover:img-highlight pointer-events-none w-full h-full"
+              className="group-hover:img-highlight pointer-events-none z-10"
               style={{
-                width: `${SPARK_SHEET_FRAME_WIDTH * PIXEL_SCALE}px`,
-                height: `${SPARK_SHEET_FRAME_WIDTH * PIXEL_SCALE}px`,
-                imageRendering: "pixelated",
                 position: "absolute",
-
-                // Adjust the base of stone to be perfectly aligned
-                // between two grid boxes
-                bottom: `-${18 * PIXEL_SCALE}px`,
-                left: `-${6 * PIXEL_SCALE}px`,
+                left: "-86.7px",
+                top: "-50px",
+                imageRendering: "pixelated",
+                width: `${GRID_WIDTH_PX * 7}px`,
               }}
               getInstance={(spritesheet) => {
                 sparkGif.current = spritesheet;
               }}
               image={sparkSheet}
-              widthFrame={SPARK_SHEET_FRAME_WIDTH}
-              heightFrame={SPARK_SHEET_FRAME_HEIGHT}
+              widthFrame={112}
+              heightFrame={48}
               fps={24}
-              steps={5}
+              steps={6}
               direction={`forward`}
               autoplay={false}
-              loop={true}
+              loop={false}
               onLoopComplete={(spritesheet) => {
                 spritesheet.pause();
               }}
@@ -262,70 +247,89 @@ export const Stone: React.FC<Props> = ({ rockIndex, expansionIndex }) => {
               )}
             </Overlay>
           </>
-        )}
+        </div>
+      )}
 
-        <Spritesheet
-          style={{
-            opacity: collecting ? 1 : 0,
-            transition: "opacity 0.2s ease-in",
+      <Spritesheet
+        style={{
+          position: "absolute",
+          left: "-86.5px",
+          top: "-50px",
+          opacity: collecting ? 1 : 0,
+          transition: "opacity 0.2s ease-in",
+          width: `${GRID_WIDTH_PX * 7}px`,
+          imageRendering: "pixelated",
+        }}
+        className="pointer-events-none z-20"
+        getInstance={(spritesheet) => {
+          minedGif.current = spritesheet;
+        }}
+        image={dropSheet}
+        widthFrame={112}
+        heightFrame={48}
+        fps={18}
+        steps={10}
+        direction={`forward`}
+        autoplay={false}
+        loop={false}
+        onLoopComplete={(spritesheet) => {
+          spritesheet.pause();
+        }}
+      />
 
-            width: `${SPARK_SHEET_FRAME_WIDTH * PIXEL_SCALE}px`,
-            height: `${SPARK_SHEET_FRAME_WIDTH * PIXEL_SCALE}px`,
-            imageRendering: "pixelated",
-            position: "absolute",
-
-            // Adjust the base of stone to be perfectly aligned
-            // between two grid boxes
-            bottom: `-${18 * PIXEL_SCALE}px`,
-            left: `-${6 * PIXEL_SCALE}px`,
-          }}
-          getInstance={(spritesheet) => {
-            minedGif.current = spritesheet;
-          }}
-          image={dropSheet}
-          widthFrame={DROP_SHEET_FRAME_WIDTH}
-          heightFrame={DROP_SHEET_FRAME_HEIGHT}
-          fps={18}
-          steps={7}
-          direction={`forward`}
-          autoplay={false}
-          loop={true}
-          onLoopComplete={(spritesheet) => {
-            spritesheet.pause();
-          }}
-        />
-
-        <TimeLeftPanel
-          text="Recovers in:"
-          timeLeft={timeLeft}
-          showTimeLeft={showRockTimeLeft}
-        />
-
-        <div
-          className={classNames(
-            "transition-opacity pointer-events-none absolute -bottom-5 left-1/2 -translate-x-1/2",
-            {
-              "opacity-100": touchCount > 0,
-              "opacity-0": touchCount === 0,
-            }
-          )}
-        >
-          <HealthBar
-            percentage={collecting ? 0 : 100 - (touchCount / 3) * 100}
+      {/* Mined stone  */}
+      {mined && (
+        <>
+          <img
+            src={hitbox}
+            className="pointer-events-none -z-10 absolute opacity-50"
+            style={{
+              width: `${GRID_WIDTH_PX}px`,
+            }}
           />
-        </div>
-
+        </>
+      )}
+      {/* Health bar shown when striking */}
+      <div
+        className={classNames(
+          "absolute top-10 left-1 transition-opacity pointer-events-none",
+          {
+            "opacity-100": touchCount > 0,
+            "opacity-0": touchCount === 0,
+          }
+        )}
+      >
+        <HealthBar percentage={collecting ? 0 : 100 - (touchCount / 3) * 100} />
+      </div>
+      {/* Recovery time panel */}
+      {mined && (
         <div
-          className={classNames(
-            "transition-opacity absolute top-24 w-40 left-20 z-20 pointer-events-none",
-            {
-              "opacity-100": showPopover,
-              "opacity-0": !showPopover,
-            }
-          )}
+          className="absolute"
+          style={{
+            top: "30px",
+            left: "-26px",
+          }}
         >
-          {popover}
+          {overlayRef.current && (
+            <TimeLeftOverlay
+              target={overlayRef.current}
+              timeLeft={timeLeft}
+              showTimeLeft={showRockTimeLeft}
+            />
+          )}
         </div>
+      )}
+      {/* Popover showing amount of stone collected */}
+      <div
+        className={classNames(
+          "transition-opacity absolute top-8 w-40 left-12 z-20 pointer-events-none",
+          {
+            "opacity-100": showPopover,
+            "opacity-0": !showPopover,
+          }
+        )}
+      >
+        {popover}
       </div>
     </div>
   );

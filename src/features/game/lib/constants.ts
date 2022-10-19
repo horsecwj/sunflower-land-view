@@ -62,7 +62,7 @@ export const INITIAL_STOCK: Inventory = {
   "Pumpkin Soup": new Decimal(1),
   Sauerkraut: new Decimal(1),
   "Roasted Cauliflower": new Decimal(1),
-
+  Chicken: new Decimal(6),
   "Sunflower Cake": new Decimal(1),
   "Potato Cake": new Decimal(1),
   "Pumpkin Cake": new Decimal(1),
@@ -85,7 +85,7 @@ export const INITIAL_FIELDS: GameState["fields"] = {
       items: [
         {
           amount: 2,
-          name: "Sunflower",
+          name: "Sunflower Seed",
         },
       ],
     },
@@ -171,20 +171,20 @@ export const INITIAL_TREES: GameState["trees"] = {
   },
 };
 
-export const INITIAL_SHRUBS: GameState["shrubs"] = {
+export const INITIAL_GOLD_MINES: LandExpansion["gold"] = {
   0: {
-    wood: {
+    stone: {
       amount: 0.1,
-      choppedAt: 0,
+      minedAt: 0,
     },
-    x: -3,
-    y: 3,
-    height: 2,
-    width: 2,
+    x: -4,
+    y: 2,
+    height: 1,
+    width: 1,
   },
 };
 
-export const INITIAL_PEBBLES: GameState["pebbles"] = {
+export const INITIAL_EXPANSION_IRON: LandExpansion["iron"] = {
   0: {
     stone: {
       amount: 0.1,
@@ -280,41 +280,224 @@ export const GENESIS_LAND_EXPANSION: LandExpansion = {
   createdAt: 0,
   readyAt: 0,
 
-  shrubs: INITIAL_SHRUBS,
-  pebbles: INITIAL_PEBBLES,
+  // gold: INITIAL_GOLD_MINES,
   terrains: INITIAL_TERRAIN,
+  iron: INITIAL_EXPANSION_IRON,
 
   plots: INITIAL_PLOTS,
 };
 
-export const INITIAL_EXPANSIONS = [GENESIS_LAND_EXPANSION];
+export const INITIAL_EXPANSIONS: LandExpansion[] = [
+  {
+    createdAt: 0,
+    readyAt: 0,
+
+    terrains: INITIAL_TERRAIN,
+    plots: INITIAL_PLOTS,
+
+    iron: {
+      0: {
+        stone: {
+          amount: 2,
+          minedAt: 0,
+        },
+        x: 1,
+        y: 2,
+        height: 1,
+        width: 1,
+      },
+    },
+    stones: {
+      0: {
+        stone: {
+          amount: 2,
+          minedAt: 0,
+        },
+        x: 3,
+        y: 2,
+        height: 1,
+        width: 1,
+      },
+    },
+    trees: {
+      0: {
+        wood: {
+          amount: 3,
+          choppedAt: 0,
+        },
+        x: -3,
+        y: 3,
+        height: 2,
+        width: 2,
+      },
+    },
+  },
+  {
+    createdAt: 0,
+    readyAt: 0,
+
+    gold: INITIAL_GOLD_MINES,
+    terrains: {
+      0: {
+        name: TerrainTypeEnum.terrain5,
+        height: 54 / 3,
+        width: 52,
+        x: -2,
+        y: -1,
+      },
+    },
+
+    plots: {
+      0: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: -2,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+      1: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: -1,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+      2: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: 0,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+    } as GameState["plots"],
+
+    trees: {
+      0: {
+        wood: {
+          amount: 3,
+          choppedAt: 0,
+        },
+        x: 1,
+        y: 1,
+        height: 2,
+        width: 2,
+      },
+    },
+  },
+  {
+    createdAt: 0,
+    readyAt: 0,
+
+    // gold: INITIAL_GOLD_MINES,
+    terrains: {
+      0: {
+        name: TerrainTypeEnum.terrain5,
+        height: 54 / 3,
+        width: 52,
+        x: -2,
+        y: -1,
+      },
+    },
+
+    plots: {
+      0: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: -2,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+      1: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: -1,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+      2: {
+        crop: { name: "Sunflower", plantedAt: 0 },
+        x: 0,
+        y: -1,
+        height: 1,
+        width: 1,
+      },
+    } as GameState["plots"],
+
+    trees: {
+      0: {
+        wood: {
+          amount: 3,
+          choppedAt: 0,
+        },
+        x: 1,
+        y: 1,
+        height: 2,
+        width: 2,
+      },
+    },
+
+    fruitPatches: {
+      0: {
+        height: 2,
+        width: 2,
+        x: -2,
+        y: 3,
+        fruit: {
+          amount: 1,
+          name: "Apple",
+          plantedAt: 0,
+        },
+      },
+    },
+
+    mines: {
+      0: {
+        height: 2,
+        width: 2,
+        x: 0,
+        y: 3,
+      },
+    },
+  },
+];
 
 export const INITIAL_BUMPKIN: Bumpkin = {
   id: 1,
   experience: 0,
+  tokenUri: "bla",
   equipped: {
     body: "Light Brown Farmer Potion",
     hair: "Basic Hair",
-    eyes: "Rosy Wide Eyes",
-    mouth: "Wide Smile",
     shirt: "Red Farmer Shirt",
     pants: "Farmer Pants",
     shoes: "Black Farmer Boots",
     tool: "Farmer Pitchfork",
+    background: "Farm Background",
   },
-  tokenUri: "https://api-dev.sunflower-land.com/bumpkin/1_v1_1_2_3",
+  skills: {},
   stamina: {
-    value: 0,
+    value: 10,
     replenishedAt: 0,
   },
+  achievements: {
+    "Busy Bumpkin": 1,
+  },
+  activity: {},
 };
 
 export const INITIAL_FARM: GameState = {
-  balance: new Decimal(fromWei("0")),
+  balance: new Decimal(0),
   fields: INITIAL_FIELDS,
   inventory: {
+    "Fat Chicken": new Decimal(1),
+    Chicken: new Decimal(6),
+    "Chicken Coop": new Decimal(1),
+    Wood: new Decimal(50),
+    Gold: new Decimal(10),
+    Stone: new Decimal(10),
     Sunflower: new Decimal(5),
     Potato: new Decimal(12),
+    Carrot: new Decimal("502"),
     "Roasted Cauliflower": new Decimal(1),
     "Carrot Cake": new Decimal(1),
     Radish: new Decimal(100),
@@ -322,11 +505,18 @@ export const INITIAL_FARM: GameState = {
     Egg: new Decimal(15),
     "Rusty Shovel": new Decimal(1),
     Axe: new Decimal(3),
+    Observatory: new Decimal(1),
     Pickaxe: new Decimal(3),
+    "Stone Pickaxe": new Decimal(3),
+    "Iron Pickaxe": new Decimal(5),
     "Trading Ticket": new Decimal(50),
     "Chef Hat": new Decimal(1),
     "Human War Banner": new Decimal(1),
     Warrior: new Decimal(1),
+    "Boiled Egg": new Decimal(3),
+    "Mashed Potato": new Decimal(1),
+    "Sunflower Cake": new Decimal(1),
+    "Pumpkin Soup": new Decimal(1),
   },
   stock: INITIAL_STOCK,
   trees: INITIAL_TREES,
@@ -350,13 +540,23 @@ export const INITIAL_FARM: GameState = {
     "Radish Cake": "2025-01-01T00:00:00.000Z",
     "Wheat Cake": "1970-01-01T00:00:00.000Z",
   },
-  shrubs: INITIAL_SHRUBS,
-  pebbles: INITIAL_PEBBLES,
   terrains: INITIAL_TERRAIN,
   plots: INITIAL_PLOTS,
 
   expansions: INITIAL_EXPANSIONS,
-  buildings: {},
+  buildings: {
+    Market: [
+      {
+        coordinates: {
+          x: 4,
+          y: 4,
+        },
+        createdAt: 0,
+        id: "123",
+        readyAt: 0,
+      },
+    ],
+  },
   airdrops: [
     {
       createdAt: Date.now(),
@@ -381,6 +581,53 @@ export const INITIAL_FARM: GameState = {
     ],
   },
   bumpkin: INITIAL_BUMPKIN,
+
+  grubShop: {
+    opensAt: new Date("2022-10-05").getTime(),
+    closesAt: new Date("2022-10-08").getTime(),
+    orders: [
+      {
+        id: "asdj123",
+        name: "Boiled Egg",
+        sfl: new Decimal(10),
+      },
+      {
+        id: "asdasd",
+        name: "Beetroot Cake",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "3",
+        name: "Sunflower Cake",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "4",
+        name: "Bumpkin Broth",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "5",
+        name: "Mashed Potato",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "6",
+        name: "Wheat Cake",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "7",
+        name: "Pumpkin Soup",
+        sfl: new Decimal(20),
+      },
+      {
+        id: "8",
+        name: "Mashed Potato",
+        sfl: new Decimal(20),
+      },
+    ],
+  },
 };
 
 export const EMPTY: GameState = {
@@ -403,8 +650,6 @@ export const EMPTY: GameState = {
     gathering: new Decimal(0),
   },
   stockExpiry: {},
-  shrubs: INITIAL_SHRUBS,
-  pebbles: INITIAL_PEBBLES,
   terrains: INITIAL_TERRAIN,
   plots: INITIAL_PLOTS,
   expansions: INITIAL_EXPANSIONS,
@@ -416,8 +661,12 @@ export const MAX_STAMINA: Record<BumpkinLevel, number> = {
   1: 10,
   2: 50,
   3: 100,
+  4: 200,
+  5: 300,
 };
 
 export const CHOP_STAMINA_COST = 2;
 export const STONE_MINE_STAMINA_COST = 2;
+export const IRON_MINE_STAMINA_COST = 2;
 export const PLANT_STAMINA_COST = 1;
+export const GOLD_MINE_STAMINA_COST = 2;

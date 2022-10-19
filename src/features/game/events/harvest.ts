@@ -2,7 +2,6 @@ import { FieldItem, GameState, Inventory } from "../types/game";
 import { Crop, CROPS } from "../types/crops";
 import Decimal from "decimal.js-light";
 import { screenTracker } from "lib/utils/screen";
-import { getGoblinCount, getHarvestCount } from "../lib/goblinShovelStorage";
 import cloneDeep from "lodash.clonedeep";
 
 export type HarvestAction = {
@@ -16,13 +15,6 @@ type Options = {
   createdAt?: number;
 };
 
-export const isShovelStolen = () => {
-  const goblinThreshold = getGoblinCount().add(1).pow(3).mul(57);
-  console.log("isShovelStolen ,goblinThreshold ", goblinThreshold);
-  console.log("getHarvestCount()", getHarvestCount());
-  return getHarvestCount().greaterThanOrEqualTo(goblinThreshold);
-};
-
 export function isReadyToHarvest(
   createdAt: number,
   field: FieldItem,
@@ -34,10 +26,6 @@ export function isReadyToHarvest(
 export function harvest({ state, action, createdAt = Date.now() }: Options) {
   const stateCopy = cloneDeep(state);
   const fields = { ...stateCopy.fields };
-
-  if (isShovelStolen()) {
-    throw new Error("Missing shovel!");
-  }
 
   if (action.index < 0) {
     throw new Error("Field does not exist");

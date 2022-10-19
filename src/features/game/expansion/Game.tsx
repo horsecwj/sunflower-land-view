@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useActor } from "@xstate/react";
+import { Routes, Route } from "react-router-dom";
 
 import { useInterval } from "lib/utils/hooks/useInterval";
 import * as AuthProvider from "features/auth/lib/Provider";
@@ -18,7 +19,6 @@ import { Success } from "../components/Success";
 import { Syncing } from "../components/Syncing";
 import { Land } from "./Land";
 import { Hud } from "features/island/hud/Hud";
-import { Water } from "./components/Water";
 import { Expanding } from "./components/Expanding";
 import { ExpansionSuccess } from "./components/ExpansionSuccess";
 import { PlaceableOverlay } from "./components/PlaceableOverlay";
@@ -32,6 +32,9 @@ import { NoBumpkin } from "features/island/bumpkin/NoBumpkin";
 import { MintingBumpkin } from "features/island/bumpkin/components/MintingBumpkin";
 import { BumpkinMinted } from "features/island/bumpkin/components/BumpkinMinted";
 import { Swarming } from "../components/Swarming";
+import { Helios } from "features/helios/Helios";
+import { Cooldown } from "../components/Cooldown";
+import { Rules } from "../components/Rules";
 
 const AUTO_SAVE_INTERVAL = 1000 * 30; // autosave every 30 seconds
 const SHOW_MODAL: Record<StateValues, boolean> = {
@@ -44,7 +47,7 @@ const SHOW_MODAL: Record<StateValues, boolean> = {
   levelling: false,
   refreshing: true,
   announcing: true,
-  notifying: true,
+  deposited: true,
   expanding: true,
   expanded: true,
   hoarding: true,
@@ -53,6 +56,8 @@ const SHOW_MODAL: Record<StateValues, boolean> = {
   mintingBumpkin: true,
   bumpkinMinted: true,
   swarming: true,
+  coolingDown: true,
+  gameRules: true,
 };
 
 export const Game: React.FC = () => {
@@ -130,7 +135,7 @@ export const Game: React.FC = () => {
         <Panel>
           {gameState.matches("loading") && <Loading />}
           {gameState.matches("refreshing") && <Refreshing />}
-          {gameState.matches("notifying") && <Notifications />}
+          {gameState.matches("deposited") && <Notifications />}
           {gameState.matches("announcing") && <Announcements />}
           {gameState.matches("error") && (
             <ErrorMessage
@@ -146,15 +151,18 @@ export const Game: React.FC = () => {
           {gameState.matches("noBumpkinFound") && <NoBumpkin />}
           {gameState.matches("mintingBumpkin") && <MintingBumpkin />}
           {gameState.matches("bumpkinMinted") && <BumpkinMinted />}
+          {gameState.matches("coolingDown") && <Cooldown />}
+          {gameState.matches("gameRules") && <Rules />}
         </Panel>
       </Modal>
 
-      <div className="absolute z-0 w-full h-full">
-        <Water level={gameState.context.state.expansions.length + 1} />
-      </div>
       <div className="absolute z-10 w-full h-full">
         <PlaceableOverlay>
-          <Land />
+          <Routes>
+            <Route path="/" element={<Land />} />
+            <Route path="/helios" element={<Helios key="helios" />} />
+            <Route element={<Land />} />
+          </Routes>
         </PlaceableOverlay>
       </div>
       <div className="absolute z-20">

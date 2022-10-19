@@ -36,7 +36,7 @@ type GetStateArgs = {
 export async function isFarmBlacklisted(id: number) {
   const metadata = await loadMetadata(id);
 
-  return metadata.image.includes("blacklisted");
+  return metadata.image.includes("banned");
 }
 //let result = (param1, param2) => param1+param2;
 
@@ -113,7 +113,6 @@ export async function getOnChainState({
   const inventory = balancesToInventory(balances);
   const fields = populateFields(inventory);
 
-  console.log({ bumpkins });
   return {
     game: {
       ...EMPTY,

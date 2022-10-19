@@ -23,6 +23,13 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Parsnip Seed": 108,
   "Radish Seed": 109,
   "Wheat Seed": 110,
+  "Kale Seed": 111,
+  "Magic Bean": 112,
+  "Shiny Bean": 113,
+  "Golden Bean": 114,
+  "Apple Seed": 115,
+  "Blueberry Seed": 116,
+  "Orange Seed": 117,
 
   Sunflower: 201,
   Potato: 202,
@@ -34,6 +41,7 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   Parsnip: 208,
   Radish: 209,
   Wheat: 210,
+  Kale: 211,
 
   Axe: 301,
   Pickaxe: 302,
@@ -91,6 +99,10 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Radish Cake": 513,
   "Wheat Cake": 514,
   "Boiled Egg": 515,
+  "Bumpkin Broth": 516,
+  "Bumpkin Salad": 517,
+  "Goblin's Treat": 518,
+  "Mashed Potato": 519,
 
   Wood: 601,
   Stone: 602,
@@ -191,9 +203,13 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   // Buildings
   "Fire Pit": 1001,
   Oven: 1002,
-  Anvil: 1003,
+  Blacksmith: 1003,
   Workbench: 1004,
   Bakery: 1005,
+  "Water Well": 1006,
+  Market: 1007,
+  Tent: 1008,
+  "Chicken House": 1009,
 
   // Temporary Bumpkin items
   "Chef Apron": 1101,
@@ -205,8 +221,13 @@ export const KNOWN_IDS: Record<InventoryItemName, number> = {
   "Warrior Shirt": 1107,
   "Warrior Helmet": 1108,
   "Warrior Pants": 1109,
-  "Reward 8": 1110,
-  "Reward 9": 1111,
+  "Sunflower Shield": 1110,
+  "Skull Hat": 1111,
+  "War Skull": 1112,
+  "War Tombstone": 1113,
+  "Undead Rooster": 1114,
+
+  "Dirt Path": 1201,
 };
 
 // The reverse of above

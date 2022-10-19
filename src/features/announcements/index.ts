@@ -12,6 +12,9 @@ import roadmap from "assets/announcements/roadmap.png";
 import merchant from "assets/announcements/merchant.png";
 import bumpkin from "assets/announcements/bumpkin.png";
 import warriorTop from "assets/announcements/warrior_top.png";
+import greenAmulet from "assets/bumpkins/shop/necklaces/green_amulet.png";
+import boat from "assets/announcements/boat.png";
+import warDrop from "assets/announcements/war_drop.png";
 
 export interface Announcement {
   date: Date;
@@ -26,6 +29,65 @@ export interface Announcement {
  * Announcements are shown in game after the `date`.
  */
 export const ANNOUNCEMENTS: Announcement[] = [
+  {
+    date: new Date("2022-10-17T00:00:00"),
+    title: "Sending the cavalry",
+    notes: [
+      "It's getting rough out there.",
+      "We are going to need more troops, let's stock up ready for their arrival.",
+      "Next week we will launch our main attack and end this war once and for all!",
+    ],
+    type: "war",
+  },
+  {
+    date: new Date("2022-10-12T00:00:00"),
+    title: "War Tent Items",
+    notes: [
+      "All war tent items will become available for crafting",
+      "6am UTC 13th October",
+      "New Items: Skull Hat, War Skull, Undead Chicken & War Tombstone.",
+    ],
+    type: "war",
+    image: warDrop,
+  },
+  {
+    date: new Date("2022-10-11T00:00:00"),
+    title: "New Wallet Transfer",
+    notes: [
+      "If you need to transfer your account to a new wallet, you can now do it in-game",
+      "Access Menu > Settings > Transfer Ownership",
+      "This is useful if your wallet is compromised or you want to move your farm to a new wallet.",
+    ],
+  },
+  {
+    date: new Date("2022-10-10T00:00:00"),
+    title: "You are my sunshine",
+    notes: [
+      "The war is starting to take its toll on the troops.",
+      "I think we need to boost morale so we can continue fighting.",
+      "Moonshine is a popular choice of drink in this situation but we can make it stronger with Sunshine.",
+    ],
+    type: "war",
+  },
+  {
+    date: new Date("2022-10-04T00:00:00"),
+    title: "Green Amulet Drop",
+    notes: [
+      "At 11pm 2022-10-05 UTC, the Green Amulet will be dropped.",
+      "Visit the War Tent at Goblin Village to craft it.",
+    ],
+    image: greenAmulet,
+  },
+  {
+    date: new Date("2022-10-03T00:00:00"),
+    title: "Making waves",
+    notes: [
+      "It looks like we are going to run out of land if we keep expanding.",
+      "The war effort has attracted lots of attention so we should consider building a boat to explore.",
+    ],
+    image: boat,
+    type: "war",
+  },
   {
     date: new Date("2022-09-27T00:00:00"),
     title: "Warrior Shirt Drop",

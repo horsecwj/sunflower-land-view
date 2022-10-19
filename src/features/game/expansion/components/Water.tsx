@@ -9,12 +9,13 @@ import dragonfly from "assets/decorations/dragonfly.gif";
 import goblinSwimming from "assets/npcs/goblin_swimming.gif";
 import goblinSnorkling from "assets/npcs/goblin_snorkling.gif";
 import swimmer from "assets/npcs/swimmer.gif";
+import cossies from "assets/decorations/cossies.png";
 import island from "assets/land/islands/island.png";
 import chest from "assets/icons/chest.png";
 
 import { MapPlacement } from "./MapPlacement";
 
-const LAND_WIDTH = 6;
+export const LAND_WIDTH = 6;
 
 interface Props {
   level: number;
@@ -45,7 +46,7 @@ export const Water: React.FC<Props> = ({ level }) => {
           className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         />
 
-        <MapPlacement x={-offset} y={1}>
+        <MapPlacement x={-offset} y={1} width={1.185}>
           <img
             style={{
               width: `${GRID_WIDTH_PX * 1.185}px`,
@@ -55,7 +56,7 @@ export const Water: React.FC<Props> = ({ level }) => {
           />
         </MapPlacement>
 
-        <MapPlacement x={-3 - offset} y={-1}>
+        <MapPlacement x={-3 - offset} y={-1} width={6.1}>
           <img
             src={goblinSwimming}
             style={{
@@ -64,21 +65,33 @@ export const Water: React.FC<Props> = ({ level }) => {
           />
         </MapPlacement>
 
-        <MapPlacement x={-2} y={offset + 2}>
+        <MapPlacement x={-2} y={offset + 2} width={3}>
           <img
             src={goblinSnorkling}
             style={{
-              width: `${64 * PIXEL_SCALE}px`,
+              width: `${3 * GRID_WIDTH_PX}px`,
             }}
           />
         </MapPlacement>
 
-        <MapPlacement x={offset + 4} y={6}>
+        <MapPlacement x={offset + 4} y={6} width={1}>
           <img
             src={swimmer}
             style={{
-              width: `${16 * PIXEL_SCALE}px`,
+              width: `${1 * GRID_WIDTH_PX}px`,
               transform: "scaleX(-1)",
+              zIndex: 2,
+            }}
+          />
+        </MapPlacement>
+        <MapPlacement x={offset + 4} y={6} width={1}>
+          <img
+            src={cossies}
+            style={{
+              width: `${GRID_WIDTH_PX}px`,
+              transform: "scaleX(-1)",
+              position: "relative",
+              left: `${16 * PIXEL_SCALE}px`,
               zIndex: 2,
             }}
           />

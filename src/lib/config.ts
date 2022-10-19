@@ -12,11 +12,12 @@ const INVENTORY_CONTRACT = import.meta.env.VITE_INVENTORY_CONTRACT;
 const PAIR_CONTRACT = import.meta.env.VITE_PAIR_CONTRACT;
 const SESSION_CONTRACT = import.meta.env.VITE_SESSION_CONTRACT;
 const TOKEN_CONTRACT = import.meta.env.VITE_TOKEN_CONTRACT;
-const MOM_CONTRACT = import.meta.env.VITE_MOM_CONTRACT as string;
 const DISCORD_REDIRECT = import.meta.env.VITE_DISCORD_REDIRECT;
 const CLIENT_VERSION = import.meta.env.VITE_CLIENT_VERSION as string;
 const RELEASE_VERSION = import.meta.env.VITE_RELEASE_VERSION as string;
 const RECAPTCHA_SITEKEY = import.meta.env.VITE_RECAPTCHA_SITEKEY as string;
+const CLOUDFLARE_CAPTCHA_SITEKEY = import.meta.env
+  .VITE_CLOUDFLARE_CAPTCHA_SITEKEY as string;
 const TRADER_CONTRACT = import.meta.env.VITE_TRADER_CONTRACT as string;
 const FROG_CONTRACT = import.meta.env.VITE_FROG_CONTRACT as string;
 const FROG_DONATION = import.meta.env.VITE_FROG_DONATION as string;
@@ -43,7 +44,7 @@ export const CONFIG = {
   CLIENT_VERSION,
   RELEASE_VERSION,
   RECAPTCHA_SITEKEY,
-  MOM_CONTRACT,
+  CLOUDFLARE_CAPTCHA_SITEKEY,
   TRADER_CONTRACT,
   FROG_CONTRACT,
   FROG_DONATION,

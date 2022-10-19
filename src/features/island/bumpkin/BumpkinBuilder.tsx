@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box } from "components/ui/Box";
 import { getKeys } from "features/game/types/craftables";
-import { randomBetweenMaxExclusive as randomInt } from "features/game/expansion/lib/randomBetweenMaxExlusive";
 import { Button } from "components/ui/Button";
 import { DynamicNPC } from "./components/DynamicNPC";
 import { DynamicNFT } from "../../bumpkins/components/DynamicNFT";
 
 import hairIcon from "assets/bumpkins/icons/hair_icon.png";
-import eyesIcon from "assets/bumpkins/icons/eyes_icon.png";
 import bodyIcon from "assets/bumpkins/icons/body_icon.png";
 import shirtIcon from "assets/bumpkins/icons/shirt_icon.png";
 import leftArrow from "assets/icons/arrow_left.png";
 import rightArrow from "assets/icons/arrow_right.png";
 import { Context } from "features/game/GameProvider";
 import { InitialBumpkinParts } from "features/game/actions/mintBumpkin";
+import { randomInt } from "lib/utils/random";
+import { BumpkinWallpaper } from "features/game/types/bumpkin";
 
 export type LimitedBody =
   | "Beige Farmer Potion"
@@ -25,11 +25,6 @@ export type LimitedShirt =
   | "Yellow Farmer Shirt"
   | "Blue Farmer Shirt";
 export type LimitedPants = "Farmer Pants";
-export type LimitedEyes =
-  | "Rosy Wide Eyes"
-  | "Rosy Squinted Eyes"
-  | "Rosy Butterfly Eyes";
-export type LimitedMouth = "Wide Smile";
 export type LimitedShoes = "Black Farmer Boots";
 export type LimitedTools = "Farmer Pitchfork";
 
@@ -38,23 +33,20 @@ type LimitedBumpkinItem =
   | LimitedHair
   | LimitedShirt
   | LimitedPants
-  | LimitedEyes
-  | LimitedMouth
   | LimitedShoes
   | LimitedTools;
 
 interface Bumpkin {
   body: LimitedBody;
   hair: LimitedHair;
-  eyes: LimitedEyes;
-  mouth: LimitedMouth;
+  background: BumpkinWallpaper;
   shirt: LimitedShirt;
   pants: LimitedPants;
   shoes: LimitedShoes;
   tool: LimitedTools;
 }
 
-type Category = "hair" | "eyes" | "body" | "shirt";
+type Category = "hair" | "body" | "shirt";
 type CategoryDetails = {
   name: Category;
   icon: string;
@@ -66,11 +58,6 @@ const BUMPKIN_PARTS: Record<Category, CategoryDetails> = {
     name: "hair",
     icon: hairIcon,
     options: ["Basic Hair", "Explorer Hair", "Rancher Hair"],
-  },
-  eyes: {
-    name: "eyes",
-    icon: eyesIcon,
-    options: ["Rosy Wide Eyes", "Rosy Squinted Eyes", "Rosy Butterfly Eyes"],
   },
   body: {
     name: "body",
@@ -91,19 +78,17 @@ const BUMPKIN_PARTS: Record<Category, CategoryDetails> = {
 const getRandomPart = <T,>(category: Category) => {
   const { options } = BUMPKIN_PARTS[category];
   const randomIndex = randomInt(0, options.length);
-
   return options[randomIndex] as unknown as T;
 };
 
 const makeInitialBumpkin = (): Bumpkin => ({
   body: getRandomPart<LimitedBody>("body"),
   hair: getRandomPart<LimitedHair>("hair"),
-  eyes: getRandomPart<LimitedEyes>("eyes"),
   shirt: getRandomPart<LimitedShirt>("shirt"),
-  mouth: "Wide Smile",
   pants: "Farmer Pants",
   shoes: "Black Farmer Boots",
   tool: "Farmer Pitchfork",
+  background: "Farm Background",
 });
 
 const findSelectedOptionIndex = (
@@ -166,7 +151,6 @@ export const BumpkinBuilder: React.FC = () => {
       body: bumpkinParts.body,
       hair: bumpkinParts.hair,
       shirt: bumpkinParts.shirt,
-      eyes: bumpkinParts.eyes,
     };
     gameService.send("MINT_BUMPKIN", { parts });
   };

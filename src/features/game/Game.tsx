@@ -31,7 +31,6 @@ import { Lore } from "./components/Lore";
 import { ClockIssue } from "./components/ClockIssue";
 import { screenTracker } from "lib/utils/screen";
 import { Refreshing } from "features/auth/components/Refreshing";
-import { GoblinShovel } from "features/farming/crops/components/GoblinShovel";
 import { Announcements } from "features/announcements/Announcement";
 import { Notifications } from "./components/Notifications";
 import { Hoarding } from "./components/Hoarding";
@@ -39,11 +38,13 @@ import { Airdrop } from "./components/Airdrop";
 import { GoblinWar } from "features/war/GoblinWar";
 import { CommunityGardenEntry } from "features/farming/town/components/CommunityGardenEntry";
 import { Swarming } from "./components/Swarming";
+import { Cooldown } from "./components/Cooldown";
+import { Rules } from "./components/Rules";
 
 const AUTO_SAVE_INTERVAL = 1000 * 30; // autosave every 30 seconds
 const SHOW_MODAL: Record<StateValues, boolean> = {
   loading: true,
-  notifying: true,
+  deposited: true,
   announcing: true,
   playing: false,
   autosaving: false,
@@ -60,6 +61,8 @@ const SHOW_MODAL: Record<StateValues, boolean> = {
   mintingBumpkin: false,
   bumpkinMinted: false,
   swarming: true,
+  coolingDown: true,
+  gameRules: true,
 };
 
 export const Game: React.FC = () => {
@@ -110,7 +113,7 @@ export const Game: React.FC = () => {
           {gameState.matches("loading") && <Loading />}
 
           {gameState.matches("announcing") && <Announcements />}
-          {gameState.matches("notifying") && <Notifications />}
+          {gameState.matches("deposited") && <Notifications />}
 
           {gameState.matches("refreshing") && <Refreshing />}
           {gameState.matches("error") && (
@@ -122,6 +125,8 @@ export const Game: React.FC = () => {
           {gameState.matches("syncing") && <Syncing />}
           {gameState.matches("hoarding") && <Hoarding />}
           {gameState.matches("swarming") && <Swarming />}
+          {gameState.matches("coolingDown") && <Cooldown />}
+          {gameState.matches("gameRules") && <Rules />}
         </Panel>
       </Modal>
       {/* check local storage and show modal if not read */}
@@ -142,7 +147,6 @@ export const Game: React.FC = () => {
         isFarming
       />
       <Lore />
-      <GoblinShovel />
       <Airdrop />
       <CommunityGardenEntry />
       {!gameState.matches("loading") && <GoblinWar />}

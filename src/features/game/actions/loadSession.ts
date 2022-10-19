@@ -24,6 +24,8 @@ type Response = {
   whitelistedAt?: string;
   itemsMintedAt?: MintedAt;
   blacklistStatus?: "investigating" | "permanent";
+  deviceTrackerId: string;
+  status?: "COOL_DOWN";
 };
 
 const API_URL = CONFIG.API_URL;
@@ -189,6 +191,8 @@ export async function loadSession(
     WhitelistedAt,
     ItemsMintedAt,
     BlacklistStatus,
+    DeviceTrackerId,
+    Status,
   } = await sanitizeHTTPResponse<{
     Farm: any;
     StartedAt: string;
@@ -196,6 +200,8 @@ export async function loadSession(
     WhitelistedAt: string;
     ItemsMintedAt: MintedAt;
     BlacklistStatus: Response["blacklistStatus"];
+    DeviceTrackerId: string;
+    Status?: "COOL_DOWN";
   }>(response);
   const farm = Farm;
   const startedAt = StartedAt;
@@ -203,6 +209,8 @@ export async function loadSession(
   const whitelistedAt = WhitelistedAt;
   const itemsMintedAt = ItemsMintedAt;
   const blacklistStatus = BlacklistStatus;
+  const deviceTrackerId = DeviceTrackerId;
+  const status = Status;
 
   console.log(
     "farm,=" +
@@ -216,7 +224,9 @@ export async function loadSession(
     isBlacklisted,
     whitelistedAt,
     itemsMintedAt,
-    blacklistStatus
+    blacklistStatus,
+    deviceTrackerId,
+    status
   );
   saveSession(request.farmId);
   console.log("saveSession over");
@@ -251,6 +261,8 @@ export async function loadSession(
     whitelistedAt,
     itemsMintedAt,
     blacklistStatus,
+    deviceTrackerId,
+    status,
   };
 }
 

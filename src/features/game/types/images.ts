@@ -19,6 +19,14 @@ import radishSeed from "assets/crops/radish/seed.png";
 import radishCrop from "assets/crops/radish/crop.png";
 import wheatSeed from "assets/crops/wheat/seed.png";
 import wheatCrop from "assets/crops/wheat/crop.png";
+import magicBean from "assets/crops/magic_bean.png";
+import shinyBean from "assets/crops/shiny_bean.png";
+import goldenBean from "assets/crops/golden_bean.png";
+import kaleSeed from "assets/crops/kale/seed.png";
+import kaleCrop from "assets/crops/kale/crop.png";
+import appleSeed from "assets/fruit/apple/apple_seed.png";
+import orangeSeed from "assets/fruit/orange/orange_seed.png";
+import blueberrySeed from "assets/fruit/blueberry/blueberry_seed.png";
 
 // Tools
 import axe from "assets/tools/axe.png";
@@ -62,6 +70,7 @@ import rockyMole from "assets/nfts/rocky_mole.gif";
 import nugget from "assets/nfts/nugget.gif";
 import rockGolem from "assets/nfts/rock_golem.gif";
 import rooster from "assets/nfts/rooster.gif";
+import undeadChicken from "assets/nfts/undead_chicken.gif";
 import wickerMan from "assets/nfts/wicker_man.png";
 
 // Mutant Chickens
@@ -143,6 +152,40 @@ import coder from "assets/skills/coder.png";
 import discord from "assets/skills/discord.png";
 import liquidityProvider from "assets/skills/liquidity_provider.png";
 
+// Achievements
+
+import bumpkinChainsawAmateu from "assets/achievements/bumpkin_chainsaw_amateur.png";
+import twentyTwentyVision from "assets/achievements/20-20-vision.png";
+import bakersDozen from "assets/achievements/bakers_dozen.png";
+import beetrootBeast from "assets/achievements/beetrootBeast.png";
+import bigSpender from "assets/achievements/big_spender.png";
+import brilliantBumpkin from "assets/achievements/brilliant_bumpkin.png";
+import bumpkinBillionaire from "assets/achievements/bumpkin_billionaire.png";
+import craftmanship from "assets/achievements/craftmanship.png";
+import busyBumpkin from "assets/achievements/busy_bumpkin.png";
+import cabbageKing from "assets/achievements/cabbage_king.png";
+import canary from "assets/achievements/canary.png";
+import chefDeCusine from "assets/achievements/chef_de_cusine.png";
+import contractor from "assets/achievements/contractor.png";
+import coolCauliflower from "assets/achievements/cool_cauliflower.png";
+import jackOLantern from "assets/achievements/jack_o_lantern.png";
+import cropChampion from "assets/achievements/crop_champion.png";
+import driller from "assets/achievements/driller.png";
+import elDorado from "assets/achievements/el-dorado.png";
+import goldFever from "assets/achievements/gold_fever.png";
+import ironEyes from "assets/achievements/iron_eyes.png";
+import stapleCrop from "assets/achievements/staple_crop.png";
+import kissTheCook from "assets/achievements/kiss_the_cook.png";
+import museum from "assets/achievements/museum.png";
+import myLifeIsPotato from "assets/achievements/my_life_is_potato.png";
+import patientParsnip from "assets/achievements/patient_parsnip.png";
+import rapidRadish from "assets/achievements/rapidRadish.png";
+import somethingShiny from "assets/achievements/something_shiny.png";
+import sunSeeker from "assets/achievements/sun_seeker.png";
+import sunflowerSuperstar from "assets/achievements/sunflower_superstar.png";
+import timberrr from "assets/achievements/timber.png";
+import timeToChop from "assets/achievements/time_to_chop.png";
+
 // Coupons
 import ticket from "assets/icons/ticket.png";
 import warBond from "assets/icons/warBond.png";
@@ -187,7 +230,12 @@ import ancientHumanWarhammer from "src/assets/nfts/quest/ancient_human_warhammer
 import rapidGrowth from "src/assets/fertilisers/rapidGrowth.png";
 
 // Buildings
-import firePit from "src/assets/buildings/fire_pit.png";
+import firePit from "src/assets/buildings/kitchen.png";
+import market from "src/assets/buildings/market.png";
+import blacksmith from "src/assets/buildings/blacksmith.png";
+import tent from "src/assets/buildings/tent1.png";
+import well from "src/assets/buildings/well1.png";
+import chickenHouse from "src/assets/buildings/chicken_house.png";
 
 // Clothing
 import chefHat from "src/assets/bumpkins/small/hats/chef_hat.png";
@@ -199,6 +247,11 @@ import greenAmulet from "src/assets/bumpkins/shop/necklaces/green_amulet.png";
 import warriorShirt from "src/assets/bumpkins/shop/shirts/warrior_top.png";
 import warriorPants from "src/assets/bumpkins/shop/pants/warrior_pants.png";
 import warriorHelmet from "src/assets/bumpkins/shop/hats/warrior_helmet.png";
+import skullHat from "src/assets/bumpkins/shop/hats/skull_hat.png";
+import sunflowerShield from "src/assets/bumpkins/shop/tools/sunflower_shield.png";
+
+import skull from "src/assets/decorations/war_skulls.png";
+import warTombston from "src/assets/decorations/war_tombstone.png";
 
 import { FERTILISERS, InventoryItemName } from "./game";
 import {
@@ -220,6 +273,8 @@ import { CROPS, SEEDS } from "./crops";
 import { RESOURCES } from "./resources";
 import { Section } from "lib/utils/hooks/useScrollIntoView";
 import { SKILL_TREE } from "./skills";
+import { AchievementName, ACHIEVEMENTS } from "./achievements";
+import { EXOTIC_SEEDS, UPCOMING_SEEDS } from "./seeds";
 
 export interface ItemDetails extends Omit<LimitedItem, "name" | "description"> {
   description: string;
@@ -228,7 +283,7 @@ export interface ItemDetails extends Omit<LimitedItem, "name" | "description"> {
   section?: Section;
 }
 
-type Items = Record<InventoryItemName, ItemDetails>;
+type Items = Record<InventoryItemName | AchievementName, ItemDetails>;
 
 const crops = CROPS();
 const seeds = SEEDS();
@@ -273,6 +328,10 @@ export const ITEM_DETAILS: Items = {
   Wheat: {
     ...crops.Wheat,
     image: wheatCrop,
+  },
+  Kale: {
+    ...crops.Kale,
+    image: kaleCrop,
   },
 
   // Seeds
@@ -325,6 +384,34 @@ export const ITEM_DETAILS: Items = {
     ...seeds["Wheat Seed"],
     image: wheatSeed,
     secondaryImage: wheatCrop,
+  },
+  "Golden Bean": {
+    description: EXOTIC_SEEDS()["Golden Bean"].description,
+    image: goldenBean,
+  },
+  "Magic Bean": {
+    description: EXOTIC_SEEDS()["Magic Bean"].description,
+    image: magicBean,
+  },
+  "Shiny Bean": {
+    description: EXOTIC_SEEDS()["Shiny Bean"].description,
+    image: shinyBean,
+  },
+  "Kale Seed": {
+    description: UPCOMING_SEEDS()["Kale Seed"].description,
+    image: kaleSeed,
+  },
+  "Apple Seed": {
+    description: UPCOMING_SEEDS()["Apple Seed"].description,
+    image: appleSeed,
+  },
+  "Blueberry Seed": {
+    description: UPCOMING_SEEDS()["Blueberry Seed"].description,
+    image: blueberrySeed,
+  },
+  "Orange Seed": {
+    description: UPCOMING_SEEDS()["Orange Seed"].description,
+    image: orangeSeed,
   },
 
   // Resources
@@ -939,6 +1026,10 @@ export const ITEM_DETAILS: Items = {
     image: firePit,
     description: "Roast your Sunflowers, feed and level up your Bumpkin",
   },
+  Market: {
+    image: market,
+    description: "Buy and sell at the Farmer's Market",
+  },
   Oven: {
     image: questionMark,
     description: "TEST",
@@ -947,13 +1038,25 @@ export const ITEM_DETAILS: Items = {
     image: questionMark,
     description: "Bake your favourite cakes",
   },
-  Anvil: {
-    image: questionMark,
+  Blacksmith: {
+    image: blacksmith,
     description: "TEST",
   },
   Workbench: {
     image: questionMark,
     description: "TEST",
+  },
+  "Water Well": {
+    image: well,
+    description: "Support more crops!",
+  },
+  Tent: {
+    image: tent,
+    description: "Rest your Bumpkin and earn more stamina",
+  },
+  "Chicken House": {
+    image: chickenHouse,
+    description: "Grow your chicken empire",
   },
 
   "Sunflower Amulet": {
@@ -984,17 +1087,190 @@ export const ITEM_DETAILS: Items = {
     image: warriorHelmet,
     description: "Immune to arrows",
   },
-  "Reward 8": {
-    image: questionMark,
+  "Sunflower Shield": {
+    image: sunflowerShield,
+    description: "A hero of Sunflower Land. Free Sunflower Seeds!",
+  },
+  "Skull Hat": {
+    image: skullHat,
     description: "A reward for your war efforts",
   },
-  "Reward 9": {
-    image: questionMark,
+  "War Skull": {
+    image: skull,
+    description: "3 enemies gone",
+  },
+  "War Tombstone": {
+    image: warTombston,
     description: "A reward for your war efforts",
+  },
+  "Undead Rooster": {
+    image: undeadChicken,
+    description: "A fallen soldier during the war",
   },
 
   "Boiled Egg": {
     image: egg,
     description: "A boiled egg",
+  },
+  "Bumpkin Broth": {
+    image: greenEgg,
+    description: "A boiled egg",
+  },
+  "Mashed Potato": {
+    image: redEgg,
+    description: "A boiled egg",
+  },
+  "Bumpkin Salad": {
+    image: redEgg,
+    description: "A boiled egg",
+  },
+  "Goblin's Treat": {
+    image: redEgg,
+    description: "A boiled egg",
+  },
+
+  Explorer: {
+    image: questionMark,
+    description: ACHIEVEMENTS().Explorer.description,
+  },
+  "Busy Bumpkin": {
+    image: busyBumpkin,
+    description: ACHIEVEMENTS()["Busy Bumpkin"].description,
+  },
+  "Brilliant Bumpkin": {
+    image: brilliantBumpkin,
+    description: "",
+  },
+  "Sun Seeker": {
+    image: sunSeeker,
+    description: "",
+  },
+  "Sunflower Superstar": {
+    image: sunflowerSuperstar,
+    description: "",
+  },
+  "My life is potato": {
+    image: myLifeIsPotato,
+    description: "",
+  },
+  "Jack O'Latern": {
+    image: jackOLantern,
+    description: "",
+  },
+  "20/20 Vision": {
+    image: twentyTwentyVision,
+    description: "",
+  },
+  "Cabbage King": {
+    image: cabbageKing,
+    description: "",
+  },
+  "Beetroot Beast": {
+    image: beetrootBeast,
+    description: "",
+  },
+  "Cool Flower": {
+    image: coolCauliflower,
+    description: "",
+  },
+  "Patient Parsnips": {
+    image: patientParsnip,
+    description: "",
+  },
+  "Rapid Radish": {
+    image: rapidRadish,
+    description: "",
+  },
+  "Staple Crop": {
+    image: stapleCrop,
+    description: "",
+  },
+  "Farm Hand": {
+    image: questionMark,
+    description: "",
+  },
+  "Crop Champion": {
+    image: cropChampion,
+    description: "",
+  },
+  "Bread Winner": {
+    image: questionMark,
+    description: "",
+  },
+  "Bumpkin Billionaire": {
+    image: bumpkinBillionaire,
+    description: "",
+  },
+  "Big Spender": {
+    image: bigSpender,
+    description: "",
+  },
+  "High Roller": {
+    image: questionMark,
+    description: "",
+  },
+  Timbeerrr: {
+    image: timberrr,
+    description: "",
+  },
+  "Bumpkin Chainsaw Amateur": {
+    image: bumpkinChainsawAmateu,
+    description: "",
+  },
+  Driller: {
+    image: driller,
+    description: "",
+  },
+  Canary: {
+    image: canary,
+    description: "",
+  },
+  "Iron Eyes": {
+    image: ironEyes,
+    description: "",
+  },
+  "Something Shiny": {
+    image: somethingShiny,
+    description: "",
+  },
+  "El Dorado": {
+    image: elDorado,
+    description: "",
+  },
+  "Gold Fever": {
+    image: goldFever,
+    description: "",
+  },
+  "Kiss the Cook": {
+    image: kissTheCook,
+    description: "",
+  },
+  "Bakers Dozen": {
+    image: bakersDozen,
+    description: "",
+  },
+  "Chef de Cuisine": {
+    image: chefDeCusine,
+    description: "",
+  },
+  Craftmanship: {
+    image: craftmanship,
+    description: "",
+  },
+  "Time to chop": {
+    image: timeToChop,
+    description: "",
+  },
+  Contractor: {
+    image: contractor,
+    description: "",
+  },
+  Museum: {
+    image: museum,
+    description: "",
+  },
+  "Dirt Path": {
+    image: questionMark,
+    description: "",
   },
 };

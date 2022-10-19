@@ -1,17 +1,20 @@
 import Decimal from "decimal.js-light";
-import { BlacksmithItem, BarnItem, MarketItem, Dimensions } from "./craftables";
-import { Flag } from "./flags";
+import { Dimensions, CollectibleName } from "./craftables";
 import { InventoryItemName } from "./game";
 
 export type BuildingName =
   | "Fire Pit"
+  | "Market"
   | "Oven"
   | "Bakery"
-  | "Anvil"
-  | "Workbench";
+  | "Blacksmith"
+  | "Workbench"
+  | "Tent"
+  | "Water Well"
+  | "Chicken House";
 
 export type BuildingBluePrint = {
-  levelRequired: number;
+  unlocksAtLevels: number[];
   ingredients: {
     item: InventoryItemName;
     amount: Decimal;
@@ -20,23 +23,31 @@ export type BuildingBluePrint = {
   constructionSeconds: number;
 };
 
-export type PlaceableName =
-  | BlacksmithItem
-  | BarnItem
-  | MarketItem
-  | Flag
-  | BuildingName
-  | "Wicker Man"
-  | "Golden Bonsai";
+export type PlaceableName = CollectibleName | BuildingName | "Chicken";
 
 export const UPGRADABLES: Partial<Record<BuildingName, BuildingName>> = {
   "Fire Pit": "Oven",
-  Anvil: "Workbench",
+  Blacksmith: "Workbench",
 };
 
 export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
+  Market: {
+    unlocksAtLevels: [1],
+    ingredients: [
+      {
+        item: "Wood",
+        amount: new Decimal(3),
+      },
+      {
+        item: "Stone",
+        amount: new Decimal(3),
+      },
+    ],
+    sfl: new Decimal(0),
+    constructionSeconds: 30,
+  },
   "Fire Pit": {
-    levelRequired: 1,
+    unlocksAtLevels: [1],
     ingredients: [
       {
         item: "Wood",
@@ -51,7 +62,7 @@ export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
     constructionSeconds: 30,
   },
   Oven: {
-    levelRequired: 2,
+    unlocksAtLevels: [2],
     ingredients: [
       {
         item: "Wood",
@@ -70,7 +81,7 @@ export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
     constructionSeconds: 60 * 5,
   },
   Bakery: {
-    levelRequired: 2,
+    unlocksAtLevels: [2],
     ingredients: [
       {
         item: "Wood",
@@ -88,8 +99,8 @@ export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
     sfl: new Decimal(10),
     constructionSeconds: 60 * 30,
   },
-  Anvil: {
-    levelRequired: 1,
+  Blacksmith: {
+    unlocksAtLevels: [1],
     ingredients: [
       {
         item: "Iron",
@@ -100,7 +111,7 @@ export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
     constructionSeconds: 60 * 5,
   },
   Workbench: {
-    levelRequired: 2,
+    unlocksAtLevels: [2],
     ingredients: [
       {
         item: "Wood",
@@ -114,12 +125,61 @@ export const BUILDINGS: Record<BuildingName, BuildingBluePrint> = {
     sfl: new Decimal(1),
     constructionSeconds: 60 * 5,
   },
+  Tent: {
+    unlocksAtLevels: [2],
+    ingredients: [
+      {
+        item: "Wood",
+        amount: new Decimal(5),
+      },
+      {
+        item: "Stone",
+        amount: new Decimal(5),
+      },
+    ],
+    sfl: new Decimal(1),
+    constructionSeconds: 60 * 5,
+  },
+  "Water Well": {
+    unlocksAtLevels: [2, 5, 8, 11, 15, 18, 21, 24],
+    ingredients: [
+      {
+        item: "Wood",
+        amount: new Decimal(5),
+      },
+      {
+        item: "Stone",
+        amount: new Decimal(5),
+      },
+    ],
+    sfl: new Decimal(1),
+    constructionSeconds: 60 * 5,
+  },
+  "Chicken House": {
+    unlocksAtLevels: [1],
+    ingredients: [
+      {
+        item: "Wood",
+        amount: new Decimal(3),
+      },
+      {
+        item: "Stone",
+        amount: new Decimal(3),
+      },
+    ],
+    sfl: new Decimal(0),
+    constructionSeconds: 30,
+  },
 };
 
 export const BUILDINGS_DIMENSIONS: Record<BuildingName, Dimensions> = {
-  "Fire Pit": { height: 1, width: 1 },
+  Market: { height: 2, width: 3 },
+  "Fire Pit": { height: 2, width: 3 },
+  Blacksmith: { height: 2, width: 3 },
   Oven: { height: 1, width: 1 },
   Bakery: { height: 3, width: 3 },
-  Anvil: { height: 1, width: 1 },
   Workbench: { height: 1, width: 1 },
+  "Water Well": { height: 2, width: 2 },
+  Tent: { height: 2, width: 3 },
+  "Chicken House": { height: 2, width: 2 },
 };

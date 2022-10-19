@@ -8,6 +8,8 @@ import { Label } from "./Label";
 import timer from "assets/icons/timer.png";
 import cancel from "assets/icons/cancel.png";
 import { useLongPress } from "lib/utils/hooks/useLongPress";
+import { shortenCount } from "lib/utils/formatNumber";
+import { useIsMobile } from "lib/utils/hooks/useIsMobile";
 
 export interface BoxProps {
   hideCount?: boolean;
@@ -24,30 +26,10 @@ export interface BoxProps {
    * this as if the NFT is under construction.
    */
   cooldownInProgress?: boolean;
+  showOverlay?: boolean;
+  overlayIcon?: React.ReactNode;
+  className?: string;
 }
-
-/**
- * Format like in shortAddress
- * Rules/Limits:
- * - rounded down explicitly
- * - denominate by k, m for now
- */
-const shortenCount = (count: Decimal | undefined): string => {
-  if (!count) return "";
-
-  if (count.lessThan(1))
-    return count.toDecimalPlaces(2, Decimal.ROUND_FLOOR).toString();
-
-  if (count.lessThan(1000))
-    return count.toDecimalPlaces(0, Decimal.ROUND_FLOOR).toString();
-
-  const isThousand = count.lessThan(1e6);
-
-  return `${count
-    .div(isThousand ? 1000 : 1e6)
-    .toDecimalPlaces(1, Decimal.ROUND_FLOOR)
-    .toString()}${isThousand ? "k" : "m"}`;
-};
 
 export const Box: React.FC<BoxProps> = ({
   hideCount = false,
@@ -60,9 +42,13 @@ export const Box: React.FC<BoxProps> = ({
   locked,
   canBeLongPressed,
   cooldownInProgress,
+  showOverlay = false,
+  overlayIcon,
+  className = "",
 }) => {
   const [isHover, setIsHover] = useState(false);
   const [shortCount, setShortCount] = useState("");
+  const [isMobile] = useIsMobile();
 
   // re execute function on count change
   useEffect(() => setShortCount(shortenCount(count)), [count]);
@@ -84,8 +70,8 @@ export const Box: React.FC<BoxProps> = ({
 
   return (
     <div
-      className="relative"
-      onMouseEnter={() => setIsHover(true)}
+      className={`relative ${className}`}
+      onMouseEnter={() => setIsHover(!isMobile)}
       onMouseLeave={() => setIsHover(false)}
     >
       <div
@@ -158,7 +144,13 @@ export const Box: React.FC<BoxProps> = ({
             {isHover ? count.toString() : shortCount}
           </Label>
         )}
+        {showOverlay && (
+          <div className="absolute w-[38px] h-[38px] bg-overlay-white pointer-events-none flex justify-center items-center">
+            {overlayIcon}
+          </div>
+        )}
       </div>
+
       {(isSelected || isHover) && !locked && !disabled && (
         <img
           className="absolute w-14 h-14 top-0.5 left-0.5 pointer-events-none"

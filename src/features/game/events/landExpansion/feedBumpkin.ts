@@ -1,6 +1,7 @@
 import Decimal from "decimal.js-light";
 import { MAX_STAMINA } from "features/game/lib/constants";
 import { getBumpkinLevel } from "features/game/lib/level";
+import { trackActivity } from "features/game/types/bumpkinActivity";
 import { ConsumableName, CONSUMABLES } from "features/game/types/consumables";
 import { GameState } from "features/game/types/game";
 import cloneDeep from "lodash.clonedeep";
@@ -44,11 +45,20 @@ export function feedBumpkin({
   }
 
   inventory[action.food] = quantity.sub(1);
-  bumpkin.experience += CONSUMABLES[action.food].experience;
+
+  let foodExperience = CONSUMABLES[action.food].experience;
+
+  if (bumpkin.skills["Kitchen Hand"]) {
+    foodExperience += 0.1;
+  }
+
+  bumpkin.experience += foodExperience;
   bumpkin.stamina.value = Math.min(
     bumpkin.stamina.value + CONSUMABLES[action.food].stamina,
     maxStamina
   );
+
+  bumpkin.activity = trackActivity(`${action.food} Fed`, bumpkin.activity);
 
   return stateCopy;
 }

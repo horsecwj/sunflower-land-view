@@ -11,6 +11,7 @@ import { CraftAction } from "../types/craftables";
 import { getSessionId, SaveGameState } from "./loadSession";
 import { classToPlain } from "class-transformer";
 import { GameState } from "../types/game";
+import Decimal from "decimal.js-light";
 
 type Request = {
   actions: PastAction[];
@@ -19,6 +20,7 @@ type Request = {
   token: string;
   offset: number;
   fingerprint: string;
+  deviceTrackerId: string;
   gameState: GameState;
 };
 
@@ -44,7 +46,8 @@ function squashEvents(events: PastAction[]): PastAction[] {
 
       const isShopEvent =
         (event.type === "item.crafted" && previous.type === "item.crafted") ||
-        (event.type === "item.sell" && previous.type === "item.sell");
+        (event.type === "item.sell" && previous.type === "item.sell") ||
+        (event.type === "seed.bought" && previous.type === "seed.bought");
 
       // We can combine the amounts when buying/selling the same item
       if (isShopEvent && event.item === previous.item) {
@@ -52,8 +55,9 @@ function squashEvents(events: PastAction[]): PastAction[] {
           ...items.slice(0, -1),
           {
             ...event,
-            amount:
-              (previous as SellAction | CraftAction).amount + event.amount,
+            amount: new Decimal(
+              (previous as SellAction | CraftAction).amount
+            ).plus(new Decimal(event.amount)),
           } as PastAction,
         ];
       }

@@ -9,6 +9,12 @@ import { BuildingName } from "./buildings";
 import { GameEvent } from "../events";
 import { BumpkinParts } from "./bumpkin";
 import { ConsumableName } from "./consumables";
+import { BumpkinSkillName } from "./bumpkinSkills";
+import { AchievementName } from "./achievements";
+import { BumpkinActivityName } from "./bumpkinActivity";
+import { DecorationName } from "./decorations";
+import { FruitName } from "features/island/fruit/FruitPatch";
+import { ExoticSeedName, UpcomingSeedName } from "./seeds";
 
 export type CropReward = {
   items: {
@@ -96,6 +102,9 @@ export type Bumpkin = {
     replenishedAt: number;
   };
   experience: number;
+  skills: Partial<Record<BumpkinSkillName, number>>;
+  achievements?: Partial<Record<AchievementName, number>>;
+  activity?: Partial<Record<BumpkinActivityName, number>>;
 };
 
 export type SpecialEvent = "Chef Apron" | "Chef Hat";
@@ -110,6 +119,8 @@ export type WarItems =
 export type InventoryItemName =
   | CropName
   | SeedName
+  | ExoticSeedName
+  | UpcomingSeedName
   | CraftableName
   | ResourceName
   | SkillName
@@ -125,16 +136,18 @@ export type InventoryItemName =
   | BuildingName
   | Fertiliser
   | WarBanner
-  | ConsumableName;
+  | ConsumableName
+  | DecorationName;
 
 export type Inventory = Partial<Record<InventoryItemName, Decimal>>;
 
 export type Fields = Record<number, FieldItem>;
 
 export type Chicken = {
-  fedAt: number;
+  fedAt?: number;
   multiplier: number;
   reward?: CropReward;
+  coordinates?: { x: number; y: number };
 };
 
 export type StockExpiry = Partial<Record<InventoryItemName, string>>;
@@ -164,6 +177,19 @@ export type WarCollectionOffer = {
   }[];
 };
 
+export type GrubShopOrder = {
+  id: string;
+  name: ConsumableName;
+  sfl: Decimal;
+};
+
+// TODO - we need to store the opening and closing times for the shop
+export type GrubShop = {
+  opensAt: number;
+  closesAt: number;
+  orders: GrubShopOrder[];
+};
+
 export type Position = {
   x: number;
   y: number;
@@ -181,6 +207,12 @@ export type PlantedCrop = {
   amount?: number;
   reward?: CropReward;
   fertilisers?: Fertilisers;
+};
+
+export type PlantedFruit = {
+  name: FruitName;
+  plantedAt: number;
+  amount: number;
 };
 
 export type LandExpansionTree = {
@@ -205,6 +237,12 @@ export type LandExpansionPlot = {
   crop?: PlantedCrop;
 } & Position;
 
+export type FruitPatch = {
+  fruit?: PlantedFruit;
+} & Position;
+
+export type Mine = Position;
+
 export type BuildingProduct = {
   name: ConsumableName;
   readyAt: number;
@@ -226,10 +264,12 @@ export type LandExpansion = {
   createdAt: number;
   readyAt: number;
 
-  shrubs?: Record<number, LandExpansionTree>;
-  pebbles?: Record<number, LandExpansionRock>;
+  gold?: Record<number, LandExpansionRock>;
+  iron?: Record<number, LandExpansionRock>;
   terrains?: Record<number, LandExpansionTerrain>;
   plots?: Record<number, LandExpansionPlot>;
+  fruitPatches?: Record<number, FruitPatch>;
+  mines?: Record<number, Mine>;
   trees?: Record<number, LandExpansionTree>;
   stones?: Record<number, LandExpansionRock>;
 };
@@ -259,8 +299,6 @@ export interface GameState {
   gold: Record<number, Rock>;
   chickens: Record<number, Chicken>;
 
-  shrubs: Record<number, LandExpansionTree>;
-  pebbles: Record<number, LandExpansionRock>;
   terrains: Record<number, LandExpansionTerrain>;
   plots: Record<number, LandExpansionPlot>;
 
@@ -286,6 +324,11 @@ export interface GameState {
   bumpkin?: Bumpkin;
   buildings: Buildings;
   collectibles: Collectibles;
+  grubShop?: GrubShop;
+  grubOrdersFulfilled?: {
+    id: string;
+    fulfilledAt: number;
+  }[];
 }
 
 export interface Context {
