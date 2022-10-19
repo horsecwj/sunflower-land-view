@@ -545,7 +545,7 @@ export const INITIAL_FARM: GameState = {
 
   expansions: INITIAL_EXPANSIONS,
   buildings: {
-    Market: [
+    Workbench: [
       {
         coordinates: {
           x: 4,
@@ -663,6 +663,9 @@ export const MAX_STAMINA: Record<BumpkinLevel, number> = {
   3: 100,
   4: 200,
   5: 300,
+  6: 400,
+  7: 500,
+  8: 600,
 };
 
 export const CHOP_STAMINA_COST = 2;
