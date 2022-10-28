@@ -470,7 +470,7 @@ export class SessionManager {
     const newSessionId = await this.getNextSessionId(farmId, oldSessionId);
     return newSessionId;
   }
-
+  //采购贸易
   public async purchaseTrade({
     signature,
     sessionId,

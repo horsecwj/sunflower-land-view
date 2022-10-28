@@ -64,6 +64,7 @@ export const Withdraw: React.FC<Props> = ({ onClose }) => {
       <div className="p-2 text-sm">
         Withdrawing is temporarily restricted while your humanity is being
         verified. Thanks for your patience!
+        在验证您的人性时暂时限制退出。谢谢你的耐心！
       </div>
     );
   }
@@ -78,7 +79,7 @@ export const Withdraw: React.FC<Props> = ({ onClose }) => {
           className="w-full m-4 flex items-center justify-center"
         />
         <p className="text-xs p-1 m-1 text-center">
-          Any unsaved progress will be lost.
+          Any unsaved progress will be lost. 任何未保存的进度都将丢失。
         </p>
       </>
     );
@@ -88,6 +89,7 @@ export const Withdraw: React.FC<Props> = ({ onClose }) => {
     <div className="p-2 flex flex-col justify-center">
       <span className="text-shadow text-sm pb-2">
         You can only withdraw items that you have synced to the blockchain.
+        您只能撤回已同步到区块链的项目。
       </span>
 
       <div className="flex">

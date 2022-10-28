@@ -84,6 +84,7 @@ export const StorageItems: React.FC = () => {
         <div className="text-xs mb-2">
           <span>
             Goblins keep their delivery cut in the treasury. View them also on{" "}
+            地精将他们的交货削减在金库中。也可以在{" "}
           </span>
           <a
             href="https://opensea.io/Goblin_Treasury"

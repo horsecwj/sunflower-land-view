@@ -144,6 +144,8 @@ export const tradingPostMachine = createMachine<
       id: "listing",
       invoke: {
         src: async (context, event) => {
+          console.log("i am in tradingPostMachines  listring ");
+
           await list({
             slotId: (event as ListEvent).slotId,
             draft: (event as ListEvent).draft,

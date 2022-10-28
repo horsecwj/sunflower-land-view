@@ -40,43 +40,49 @@ const CloseEyeSvg = () => (
     <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
   </svg>
 );
-
+// SFL 代币说明
 const SFLTokenInstructions = () => (
   <ol>
     <li className="flex text-xs mb-3">
       <span className="mr-1">1.</span>
-      <span>{'Go to MetaMask and under the "Assets" tab click SFL token'}</span>
+      <span>
+        {'Go to MetaMask and under the "Assets" tab click SFL token' +
+          "转到 MetaMask 并在“资产”选项卡下单击 SFL 令牌"}
+      </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">2.</span>
-      <span>{`Click "Send" on the token's main page`}</span>
+      <span>
+        {`Click "Send" on the token's main page` + "在代币主页点击“发送”"}
+      </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">3.</span>
+      {/*  从上方复制您的农场地址并粘贴到“添加收件人”字段中*/}
       <span>
-        {
-          'Copy your farm address from above and paste into the "Add Recipient" field'
-        }
+        {'Copy your farm address from above and paste into the "Add Recipient" field /' +
+          "从上方复制您的农场地址并粘贴到“添加收件人”字段中"}
       </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">4.</span>
       <span>
-        {
-          'In the "Amount" field, enter the amount of the token you want to deposit'
-        }
+        {'In the "Amount" field, enter the amount of the token you want to deposit' +
+          "在“金额”字段中，输入您要存入的代币金额"}
       </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">5.</span>
-      <span>{'Review the transaction detail and click "Confirm" to send'}</span>
+      <span>
+        {'Review the transaction detail and click "Confirm" to send' +
+          "查看交易详情并点击“确认”发送"}
+      </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">6.</span>
       <span>
-        {
-          'Once the transaction has completed successfully, open the menu inside Sunflower Land and select "Refresh" under "Settings"'
-        }
+        {'Once the transaction has completed successfully, open the menu inside Sunflower Land and select "Refresh" under "Settings"' +
+          "'交易成功后，打开葵花乐园内的菜单，在“设置”下选择“刷新”"}
       </span>
     </li>
   </ol>
@@ -100,12 +106,16 @@ const SFLItemsInstructions = () => (
 
     <li className="flex text-xs mb-3">
       <span className="mr-1">1.</span>
-      <span>{'Go to Opensea and click the "Transfer" button'}</span>
+      <span>
+        {'Go to Opensea and click the "Transfer" button' +
+          "转到 Opensea 并单击“转移”按钮"}
+      </span>
     </li>
     <li className="flex text-xs mb-3">
       <span className="mr-1">2.</span>
       <span>
-        {'Copy your farm address from above and paste into the "Address" field'}
+        {'Copy your farm address from above and paste into the "Address" field' +
+          "从上方复制您的农场地址并粘贴到“地址”字段中"}
       </span>
     </li>
     <li className="flex text-xs mb-3">
@@ -115,9 +125,8 @@ const SFLItemsInstructions = () => (
     <li className="flex text-xs mb-3">
       <span className="mr-1">4.</span>
       <span>
-        {
-          'Once the transaction has completed successfully, open the menu inside Sunflower Land and select "Refresh" under "Settings"'
-        }
+        {'Once the transaction has completed successfully, open the menu inside Sunflower Land and select "Refresh" under "Settings"' +
+          "+交易成功后，打开向日葵乐园内的菜单，在“设置”下选择“刷新”"}
       </span>
     </li>
   </ol>
@@ -262,6 +271,7 @@ export const Deposit: React.FC = () => {
         <img src={alert} alt="alert" className="mr-2 w-5 h-5/6" />
         <span className="text-xs">
           DO NOT SEND MATIC OR ANY OTHER NON SFL TOKENS TO YOUR FARM ADDRESS
+          不要将 MATIC 或任何其他非 SFL 代币发送到您的农场地址
         </span>
       </div>
     </div>

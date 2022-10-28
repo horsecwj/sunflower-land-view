@@ -24,17 +24,19 @@ export const Delivery: React.FC<Props> = ({ onWithdraw }) => {
         <div className="flex flex-col space-y-3">
           <span className="text-sm">Want me to deliver resources?</span>
           <span className="text-sm">
-            {"It ain't free, I've got a tribe to feed!"}
+            {
+              "It ain't free, I've got a tribe to feed! 这不是免费的，我要养活一个部落！"
+            }
           </span>
           <span className="text-sm">
-            {"I'll take 30% of the resources for the "}
+            {"I'll take 30% of the resources for the  我将占用 30% 的资源"}
             <a
               className="underline"
               href="https://docs.sunflower-land.com/economy/goblin-community-treasury"
               target="_blank"
               rel="noreferrer"
             >
-              Goblin community treasury.
+              Goblin community treasury 哥布林社区宝库.
             </a>
           </span>
           <Button onClick={() => setIsTalking(false)}>Continue</Button>

@@ -28,6 +28,7 @@ const CHICKEN_OFFER: TradeOffer = {
 };
 
 describe("trade", () => {
+  //如果没有报价，则不交易物品
   it("does not trade an item if nothing is on offer", () => {
     expect(() =>
       trade({
@@ -41,7 +42,7 @@ describe("trade", () => {
       })
     ).toThrow("Nothing to trade");
   });
-
+  //如果缺少多种成分，则不交易
   it("does not trade if missing multiple ingredients", () => {
     expect(() =>
       trade({
@@ -55,7 +56,7 @@ describe("trade", () => {
       })
     ).toThrow("Insufficient ingredient: Beetroot");
   });
-
+  //如果缺少成分，则不交易
   it("does not trade if missing  ingredient", () => {
     expect(() =>
       trade({
@@ -72,7 +73,7 @@ describe("trade", () => {
       })
     ).toThrow("Insufficient ingredient: Carrot");
   });
-
+  //只交易一次报价
   it("only trades an offer once", () => {
     expect(() =>
       trade({
@@ -91,7 +92,7 @@ describe("trade", () => {
       })
     ).toThrow("Already traded");
   });
-
+  //交易不同的物品
   it("trades different items", () => {
     const state = trade({
       action: {

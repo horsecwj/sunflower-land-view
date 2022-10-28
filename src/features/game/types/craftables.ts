@@ -1035,7 +1035,7 @@ export const makeLimitedItemsByName = (
         mintReleaseDate: items[name].mintReleaseDate || 0,
       };
     }
-
+    console.log("    limitedItems[name] ", name, limitedItems[name]);
     return limitedItems;
     // TODO: FIX TYPE
   }, {} as Record<CraftableName, LimitedItem>);
@@ -1045,7 +1045,7 @@ export const filterLimitedItemsByType = (
   type: LimitedItemType | LimitedItemType[],
   limitedItems: Record<LimitedItemName, LimitedItem>
 ) => {
-  // Convert `obj` to a key/value array
+  // Convert `obj` to a key/value array 将 `obj` 转换为键值数组
   // `[['name', 'Luke Skywalker'], ['title', 'Jedi Knight'], ...]`
   const asArray = Object.entries(limitedItems);
 

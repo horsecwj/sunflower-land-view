@@ -113,7 +113,7 @@ export const DeliverItems: React.FC<Props> = ({ onWithdraw }) => {
       [itemName]: (prev[itemName] || new Decimal(0)).add(amount),
     }));
   };
-
+  // 减法
   const onSubtract = (itemName: InventoryItemName) => {
     // Transfer from inventory to selected
     let amount = 1;
@@ -136,7 +136,7 @@ export const DeliverItems: React.FC<Props> = ({ onWithdraw }) => {
       };
     });
   };
-
+  //删除
   const onRemove = (itemName: InventoryItemName) => {
     setInventory((prev) => ({
       ...prev,
@@ -231,6 +231,7 @@ export const DeliverItems: React.FC<Props> = ({ onWithdraw }) => {
 
         <span className="text-sm mb-4">
           Once delivered, you will be able to view your items on Open Sea.
+          交付后，您将能够在 Open Sea 上查看您的物品。
         </span>
       </div>
 

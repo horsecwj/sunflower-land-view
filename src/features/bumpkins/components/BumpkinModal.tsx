@@ -34,7 +34,8 @@ export const BumpkinModal: React.FC<Props> = ({ onClose }) => {
       context: { state },
     },
   ] = useActor(gameService);
-
+  console.log("i am in BumpkinModal");
+  //成就
   if (view === "achievements") {
     return <Achievements onClose={() => setView("home")} />;
   }
@@ -42,7 +43,7 @@ export const BumpkinModal: React.FC<Props> = ({ onClose }) => {
   if (view === "skills") {
     return <Skills onClose={() => setView("home")} />;
   }
-
+  //不显示灵魂绑定特征
   // Do not show soul bound characteristics
   const { body, hair, background, ...wearables } = state.bumpkin
     ?.equipped as BumpkinParts;

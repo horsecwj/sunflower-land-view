@@ -47,11 +47,15 @@ export const WarCollectors: React.FC<Props> = ({ onClose, side }) => {
 
   const showOffer = () => {
     if (
+      //  古代哥布林剑
       inventory["Ancient Goblin Sword"] ||
+      //  古代人类战锤
       inventory["Ancient Human Warhammer"]
     ) {
+      //  古代兵器
       setState("ancientWeapon");
     } else {
+      //  显示报价
       setState("showOffer");
     }
   };
@@ -159,10 +163,11 @@ export const WarCollectors: React.FC<Props> = ({ onClose, side }) => {
         src={side === "human" ? femaleHuman : femaleGoblin}
         className="w-8"
       />
-
+      {/*我们的战士需要资源来粉碎敌人。*/}
       <p className="sm:text-sm p-2">
         Our warriors need resources to crush the enemy.
       </p>
+      {/*  我会在有限的时间内为你提供战争债券。*/}
       <p className="sm:text-sm p-2">
         I will provide you with war bonds for a limited time.
       </p>

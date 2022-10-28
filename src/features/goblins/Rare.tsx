@@ -76,6 +76,7 @@ const Items: React.FC<{
       {type === LimitedItemType.WarTentItem && (
         <p className="text-xxs underline mt-4">
           You can mint multiple War Skull and War Tombstones
+          您可以铸造多个战争头骨和战争墓碑
         </p>
       )}
     </div>
@@ -90,7 +91,6 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
   ] = useActor(goblinService);
   const [isLoading, setIsLoading] = useState(true);
   const [supply, setSupply] = useState<ItemSupply>();
-
   useEffect(() => {
     const load = async () => {
       const supply = API_URL
@@ -117,6 +117,10 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
     type,
     limitedItems as Record<LimitedItemName, LimitedItem>
   );
+  console.log("i am in rare ");
+
+  console.log("inventory,items", inventory, items);
+  console.log("type," + type, +"    limitedItems", limitedItems);
 
   const [selected, setSelected] = useState(Object.values(items)[0]);
 
@@ -142,6 +146,8 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
   };
 
   const craft = async () => {
+    console.log("MINT", { item: selected.name, captcha: "" });
+
     goblinService.send("MINT", { item: selected.name, captcha: "" });
     onClose();
   };
@@ -164,13 +170,18 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
   const amountOfSelectedItemInInventory =
     inventory[selected.name]?.toNumber() || 0;
   const hasItemOnFarm = amountOfSelectedItemInInventory > 0;
-
+  console.log(
+    "amountOfSelectedItemInInventory,hasItemOnFarm",
+    amountOfSelectedItemInInventory,
+    hasItemOnFarm
+  );
   const Action = () => {
     const secondsLeft = mintCooldown({
       cooldownSeconds: selected.cooldownSeconds,
       mintedAt: selected.mintedAt,
     });
-
+    console.log("secondsLeft", secondsLeft);
+    //稀有物品仍处于冷却期
     // Rare item is still in the cooldown period
     if (secondsLeft > 0) {
       return (
@@ -217,7 +228,7 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
         </div>
       );
 
-    console.log({ selected });
+    console.log("selected", selected);
     const item = CRAFTABLES()[selected.name];
 
     if (item.requires && !inventory[item.requires]) {
@@ -228,16 +239,20 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
         </div>
       );
     }
-
+    console.log("item", item);
     const currentDate = Date.now();
     const mintReleaseDate = selected.mintReleaseDate;
+    console.log("mintReleaseDate", mintReleaseDate);
+
     if (
-      (mintReleaseDate && mintReleaseDate > currentDate) ||
-      selected.disabled
+      mintReleaseDate &&
+      mintReleaseDate > currentDate
+      //   ||
+      // selected.disabled
     ) {
       return <span className="text-xs mt-2">Coming soon</span>;
     }
-
+    console.log("canCraft", canCraft);
     if (!canCraft) return;
 
     if ([421, 410, 417].includes(selected.id as number)) {
@@ -307,7 +322,7 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
                 // rendering item remenants
                 const renderRemenants = () => {
                   if (lessIngredient) {
-                    // if inventory items is less than required items
+                    // if inventory items is less than required items 如果库存物品少于所需物品
                     return (
                       <>
                         <span className="text-xs text-shadow text-center mt-2 text-red-500">
@@ -319,7 +334,7 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
                       </>
                     );
                   } else {
-                    // if inventory items is equal to required items
+                    // if inventory items is equal to required items 如果库存项目等于所需项目
                     return (
                       <span className="text-xs text-shadow text-center mt-2">
                         {`${requiredAmount}`}

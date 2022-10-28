@@ -16,7 +16,9 @@ interface Props {
   inventory: Inventory;
   offer: Offer;
 }
-
+// "War Bond": 917,
+//   "Goblin War Point": 918,
+//   "Human War Point": 919,
 export const WarCollectionOffer: React.FC<Props> = ({
   onCraft,
   inventory,

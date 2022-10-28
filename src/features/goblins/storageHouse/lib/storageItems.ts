@@ -3,7 +3,7 @@ import { Inventory, InventoryItemName } from "features/game/types/game";
 import { RESOURCES } from "features/game/types/resources";
 
 /**
- * Items for the storage house
+ * Items for the storage house  储藏室的物品
  */
 export function getDeliverableItems(inventory: Inventory) {
   return (Object.keys(inventory) as InventoryItemName[]).reduce(

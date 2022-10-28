@@ -43,7 +43,7 @@ export const BumpkinHUD: React.FC = () => {
   const experience = state.bumpkin?.experience ?? 0;
   const level = getBumpkinLevel(experience);
   const nextLevelExperience = LEVEL_BRACKETS[level];
-
+  //耐力
   const stamina = state.bumpkin
     ? calculateBumpkinStamina({
         nextReplenishedAt: Date.now(),
@@ -57,7 +57,7 @@ export const BumpkinHUD: React.FC = () => {
     if (showBumpkinModal) setShowBumpkinModal(false);
     if (showSkillModal) setShowSkillModal(false);
   };
-
+  console.log("i am in bumpkinHUd");
   return (
     <>
       <Modal

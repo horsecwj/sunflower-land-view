@@ -29,6 +29,7 @@ export const HeliosSunflower: React.FC = () => {
           <p>Clytie the Sunflower</p>
           <p className="mt-2">
             Only the true saviour can return and harvest this Sunflower.
+            只有真正的救世主才能回归并收获这朵向日葵。
           </p>
         </Panel>
       </Modal>

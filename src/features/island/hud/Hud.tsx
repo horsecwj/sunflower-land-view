@@ -19,7 +19,7 @@ export const Hud: React.FC = () => {
   const [gameState] = useActor(gameService);
 
   const isEditing = gameState.matches("editing");
-
+  console.log("i am in hud");
   return (
     <div data-html2canvas-ignore="true" aria-label="Hud">
       <Menu />

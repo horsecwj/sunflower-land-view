@@ -189,7 +189,10 @@ export function startGoblinVillage(authContext: AuthContext) {
               const limitedItemsById = makeLimitedItemsById(
                 onChainState.limitedItems
               );
-
+              console.log(
+                "i am in goblinMachine limitedItemsById",
+                limitedItemsById
+              );
               return {
                 state: game,
                 limitedItems: limitedItemsById,

@@ -13,7 +13,7 @@ import { HeliosBlacksmith } from "./components/blacksmith/HeliosBlacksmith";
 import { IslandTravel } from "features/game/expansion/components/IslandTravel";
 import { Context } from "features/game/GameProvider";
 import { useActor } from "@xstate/react";
-
+//赫利俄斯
 export const Helios: React.FC = () => {
   const { gameService } = useContext(Context);
   const [gameState] = useActor(gameService);

@@ -16,7 +16,7 @@ import { Auctioneer } from "./components/auctioneer/Auctioneer";
 import { Resale } from "./components/resale/Resale";
 import { RetreatWishingWell } from "./components/wishingWell/RetreatWishingWell";
 import { IslandTravelWrapper } from "./components/islandTravel/IslandTravelWrapper";
-
+//撤退
 export const Retreat: React.FC = () => {
   const container = useRef(null);
 

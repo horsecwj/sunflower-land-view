@@ -50,7 +50,7 @@ export const WithdrawTokens: React.FC<Props> = ({ onWithdraw }) => {
 
     setTax(_tax);
   }, [amount, state.inventory]);
-
+  //为了能够在输入框中输入金额，当用户删除 0 时，金额需要能够是一个字符串。safeAmount 是一个 getter，将金额作为小数返回
   // In order to be able to type into the input box amount needs to be able to be a string
   // for when the user deletes the 0. safeAmount is a getter that will return amount as a Decimal
   const safeAmount = (value: Decimal | string): Decimal => {

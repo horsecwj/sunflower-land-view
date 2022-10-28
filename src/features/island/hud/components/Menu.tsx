@@ -32,7 +32,7 @@ enum MENU_LEVELS {
 export const Menu = () => {
   const { authService } = useContext(Auth.Context);
   const { gameService } = useContext(Context);
-
+  console.log("i am in Menu");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [showShareModal, setShowShareModal] = useState(false);

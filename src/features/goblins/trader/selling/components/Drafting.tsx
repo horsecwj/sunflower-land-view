@@ -25,7 +25,7 @@ interface DraftingProps {
   onUpdate: (slotId: number, draft: Draft) => void;
   onConfirm: () => void;
 }
-
+//起草
 export const Drafting: React.FC<DraftingProps> = ({
   slotId,
   itemLimits,

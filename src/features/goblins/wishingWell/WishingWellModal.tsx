@@ -59,7 +59,7 @@ const Granted = ({ lockedTime, onClose, reward }: GrantedArgs) => (
       <p className="mb-4 text-sm">{`You have received ${reward} SFL!`}</p>
       <p className="mb-4 text-sm">
         A new wish has been made for you based on your current balance of LP
-        tokens!
+        tokens! 根据您当前的 LP 代币余额，为您许下了一个新的愿望！
       </p>
       {lockedTime && (
         <p className="mb-2 text-sm">
@@ -78,7 +78,7 @@ const GrantWish = ({ totalTokensInWell, onClick, onClose }: GrantWishArgs) => (
     <div className="p-2">
       <div className="flex flex-col items-center mb-3">
         <h1 className="text-xl mb-4 text-center">
-          {`It's time to grant your wish!`}
+          {`It's time to grant your wish! 是时候实现你的愿望了`}
         </h1>
         <img src={wisingWell} alt="wishing well" className="w-16 mb-2" />
       </div>
@@ -109,7 +109,7 @@ const ZeroTokens = ({ onClick, onClose }: ZeroTokensArgs) => (
       </div>
       <p className="mb-4 text-sm">
         You have no reward available! Liquidity needs to be held for 3 days to
-        get a reward!
+        get a reward! 您没有可用的奖励！流动性需要持有3天才能获得奖励！
       </p>
       <p className="mb-2 text-sm">{`Grant a new wish and see how lucky you are!`}</p>
     </div>
@@ -118,7 +118,7 @@ const ZeroTokens = ({ onClick, onClose }: ZeroTokensArgs) => (
         Close
       </Button>
       <Button className="ml-1 whitespace-nowrap" onClick={onClick}>
-        Grant New Wish
+        Grant New Wish 授予新愿望
       </Button>
     </div>
   </>
@@ -133,6 +133,7 @@ const WaitingForWish = ({ lockedTime, onClose }: WaitingForWishArgs) => (
       </div>
       <p className="mb-4 text-sm">
         Thanks for supporting the project and making a wish.
+        感谢您对项目的支持和许愿。
       </p>
       <p className="mb-4 text-sm">
         {`Come back in ${lockedTime} to see just how lucky you have been.`}
@@ -140,12 +141,13 @@ const WaitingForWish = ({ lockedTime, onClose }: WaitingForWishArgs) => (
       <p className="mb-4 text-sm">
         Be aware that only the LP tokens you held at the time the wish was made
         will be considered when the wish is granted.
+        请注意，只有您在许愿时持有的 LP 代币才会在许愿时被考虑。
       </p>
       <div className="flex items-center border-2 rounded-md border-black p-2 mb-2 bg-[#f77621]">
         <img src={alert} alt="alert" className="mr-2 w-6" />
         <span className="text-xs">
           {`If you remove your liquidity during this time you won't receive any
-            rewards.`}
+            rewards. 如果您在此期间移除流动性，您将不会获得任何奖励`}
         </span>
       </div>
     </div>
@@ -167,17 +169,17 @@ const NoWish = ({
       </div>
       <p className="mb-4 text-sm">
         The wishing well is a magical place where SFL rewards can be made just
-        by making a wish!
+        by making a wish! 许愿井是一个神奇的地方，只要许个愿就能获得SFL奖励！
       </p>
       <p className="mb-4 text-sm">
-        Wishes are granted to farmers who{" "}
+        Wishes are granted to farmers who 愿望被授予农民谁{" "}
         <a
           className="underline"
           href="https://docs.sunflower-land.com/fundamentals/wishing-well#what-is-in-the-wishing-well"
           target="_blank"
           rel="noreferrer"
         >
-          provide liquidity
+          provide liquidity 提供流动性
         </a>
         {` in the game.`}
       </p>
@@ -195,17 +197,18 @@ const NoWish = ({
       {hasLPTokens ? (
         <p className="mb-2 text-sm">
           Looks like you have those magic LP tokens in your wallet!
+          -看起来你的钱包里有那些神奇的 LP 代币！
         </p>
       ) : (
         <p className="mb-2 text-sm">
-          {`It doesn't look like you are `}
+          {`It doesn't look like you are -看起来不像你 `}
           <a
             className="underline"
             href="https://docs.sunflower-land.com/fundamentals/wishing-well#what-is-in-the-wishing-well"
             target="_blank"
             rel="noreferrer"
           >
-            providing liquidity
+            providing liquidity -提供流动性
           </a>
           {` yet.`}
         </p>

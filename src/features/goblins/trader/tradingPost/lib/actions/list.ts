@@ -58,7 +58,19 @@ export async function listRequest(request: Request): Promise<Response> {
       }),
     }
   );
-
+  console.log("i am in listRequest");
+  console.log(
+    "listRequest request body ",
+    JSON.stringify({
+      slotId: request.slotId,
+      item: request.draft.resourceName,
+      sfl: toWei(String(request.draft.sfl)),
+      amount: toWei(
+        String(request.draft.resourceAmount),
+        getItemUnit(request.draft.resourceName)
+      ),
+    })
+  );
   if (response.status === 429) {
     throw new Error(ERRORS.TOO_MANY_REQUESTS);
   }
@@ -67,14 +79,14 @@ export async function listRequest(request: Request): Promise<Response> {
     throw new Error("Could not post the listing");
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 }
 
 export async function list(request: Request) {
   const response = await listRequest(request);
-
+  console.log("tradingMachines list request is - ", request, response);
   await metamask
     .getSessionManager()
     .listTrade({ ...response.payload, signature: response.signature });

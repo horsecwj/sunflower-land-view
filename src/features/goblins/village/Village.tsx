@@ -21,7 +21,7 @@ import { WarTent } from "../warTent/WarTent";
 interface Props {
   state: GoblinMachineState["value"];
 }
-
+//村庄
 export const Village: React.FC<Props> = () => {
   return (
     <div

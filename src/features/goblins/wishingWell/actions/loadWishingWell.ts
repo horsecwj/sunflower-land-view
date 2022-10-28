@@ -14,7 +14,7 @@ export type WishingWellTokens = {
 };
 
 /**
- * Load Blockchain data for the wishing well
+ * Load Blockchain data for the wishing well 为许愿井加载区块链数据
  */
 export async function loadWishingWell(): Promise<WishingWellTokens> {
   const tokensInWellPromise = metamask.getWishingWell().getBalance();

@@ -64,10 +64,12 @@ export const Game: React.FC = () => {
   const { authService } = useContext(AuthProvider.Context);
   const { gameService } = useContext(Context);
   const [gameState, send] = useActor(gameService);
-
+  console.log("i am in Game1025");
   useInterval(() => send("SAVE"), AUTO_SAVE_INTERVAL);
 
   useEffect(() => {
+    console.log("i am in Game1025");
+
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (gameState.context.actions.length === 0) return;
 
@@ -87,6 +89,7 @@ export const Game: React.FC = () => {
     const save = () => {
       send("SAVE");
     };
+    console.log("i am in Game1025");
 
     window.addEventListener("blur", save);
 

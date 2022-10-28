@@ -3,7 +3,7 @@ import React from "react";
 import { GRID_WIDTH_PX, PIXEL_SCALE } from "features/game/lib/constants";
 
 import building from "assets/buildings/fertilisers.png";
-
+//肥料
 export const Fertilisers: React.FC = () => {
   return (
     <div

@@ -35,6 +35,7 @@ export const Leaderboard: React.FC = () => {
 
     setLoading(true);
     const totalSupply = await metamask.getInventory().totalSupply();
+    console.log("Leaderboard totalSupply is ", totalSupply);
     const humanWarPoints = totalSupply["Human War Point"];
     const goblinWarPoints = totalSupply["Goblin War Point"];
 

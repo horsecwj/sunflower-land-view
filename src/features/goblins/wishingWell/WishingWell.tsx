@@ -19,7 +19,8 @@ export const WishingWell: React.FC = () => {
     wishingWellAudio.play();
     send("OPENING_WISHING_WELL");
     setIsOpen(true);
-    //Checks if wishingWellAudio is playing, if false, plays the sound
+    // Checks if wishingWellAudio is playing, if false, plays the sound
+    // 检查 wishingWellAudio 是否正在播放，如果为 false，则播放声音
     if (!wishingWellAudio.playing()) {
       wishingWellAudio.play();
     }

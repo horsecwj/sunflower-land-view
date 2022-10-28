@@ -1,4 +1,4 @@
-/**
+/**未来装饰的占位符，将落在不同的网格上
  * Placeholder for future decorations that will fall on a different grid
  */
 import React from "react";

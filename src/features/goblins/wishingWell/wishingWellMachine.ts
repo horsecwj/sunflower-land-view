@@ -114,6 +114,7 @@ export const wishingWellMachine = createMachine<
         invoke: {
           src: async () => {
             const well = await loadWishingWell();
+            console.log("i am in wishingWellMachine, stete well is - ", well);
 
             return { state: well };
           },
@@ -134,7 +135,7 @@ export const wishingWellMachine = createMachine<
               target: "waiting",
               actions: assignWishingWellState,
               cond: (_, event: DoneInvokeEvent<Context>) =>
-                !!event.data.state.lockedTime,
+                !!event.data.state.lockedTime, //用两个!!就可以将变量转化为对应布尔值。
             },
             {
               target: "readyToGrant",
@@ -157,6 +158,7 @@ export const wishingWellMachine = createMachine<
       wishing: {
         invoke: {
           src: async () => {
+            console.log("i am in wishing");
             await metamask.getWishingWell().wish();
           },
           onDone: {
@@ -231,14 +233,16 @@ export const wishingWellMachine = createMachine<
               fromWei(receipt.events.Rewarded.returnValues[1])
             );
 
-            // Rebase gamestate for player so the reward is added to the players balance off chain
+            // Rebase gamestate for
+            // player so the reward is added to the players balance off chain
+            // 为玩家重新设置游戏状态，以便将奖励添加到玩家平衡链
             await reset({
               farmId: Number(context.farmId),
               token: context.token as string,
               fingerprint: "fingerprint",
             });
 
-            // Reload the session to get the new refreshed balance
+            // Reload the session to get the new refreshed balance 重新加载会话以获取新的刷新余额
             const response = await loadSession({
               farmId: context.farmId as number,
               sessionId: context.sessionId as string,
