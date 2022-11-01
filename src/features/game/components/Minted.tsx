@@ -53,13 +53,14 @@ export const Minted: React.FC = () => {
         <p className="mb-3 text-sm text-justify">
           The goblins are renowned for their exceptional craftsmanship. They
           build each of these rare items by hand.
+          地精以其非凡的工艺而闻名。他们手工打造这些稀有物品
         </p>
         <p className="mb-4 text-sm text-justify">
-          {`It will take them ${cooldownPeriod} for this process to be completed.`}
+          {`It will take them ${cooldownPeriod} for this process to be completed. 这将带他们为了完成这个过程`}
         </p>
         <p className="mb-4 text-sm text-justify">
           {`You will not be able to withdraw your item or mint another one until
-          they're done.`}
+          they're done. 在完成之前，您将无法撤回您的物品或铸造另一件物品`}
         </p>
       </div>
       <Button onClick={() => goblinService.send("REFRESH")}>Ok</Button>

@@ -11,12 +11,15 @@ import { getItemUnit } from "features/game/lib/conversion";
 
 export function balancesToInventory(balances: Array<any>) {
   const names = Object.keys(KNOWN_IDS) as InventoryItemName[];
-
+  console.log("balancesToInventory names", names);
   const reduced = balances.reduce(
     (items: Inventory, balance: string, index: number) => {
       const unit = getItemUnit(names[index]);
       const value = new Decimal(fromWei(balance, unit));
-
+      console.log(unit, value, balances[index], names[index], balance);
+      if (balances[index] == 836 || balances[index] == 401) {
+        console.log(items);
+      }
       if (value.equals(0)) {
         return items;
       }

@@ -45,6 +45,7 @@ type MintEvent = {
   type: "MINT";
   item: LimitedItemName;
   captcha: string;
+  id: number;
 };
 
 export type MintedEvent = {
@@ -160,7 +161,7 @@ export function startGoblinVillage(authContext: AuthContext) {
                 farmAddress: authContext.address as string,
                 id: Number(authContext.farmId),
               });
-
+              console.log("gobilin onchainState", onChainState);
               // Get session id
               const sessionId = await metamask
                 .getSessionManager()
@@ -174,6 +175,7 @@ export function startGoblinVillage(authContext: AuthContext) {
               });
 
               const game = response?.game as GameState;
+              console.log("gobilin game", game);
 
               // Show whatever is lower, on chain or offchain
               const availableState = getLowestGameState({
@@ -309,14 +311,17 @@ export function startGoblinVillage(authContext: AuthContext) {
         minting: {
           invoke: {
             src: async (context, event) => {
-              const { item, captcha } = event as MintEvent;
-
+              const { item, captcha, id } = event as MintEvent;
+              console.log("i am in goblinMathcien mintie ");
+              console.log("contextInventory");
+              console.log(context.state);
               const { sessionId } = await mint({
                 farmId: Number(authContext.farmId),
                 sessionId: context.sessionId as string,
                 token: authContext.rawToken as string,
                 item,
                 captcha,
+                id,
               });
 
               return {

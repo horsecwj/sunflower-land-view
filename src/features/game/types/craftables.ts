@@ -1035,7 +1035,7 @@ export const makeLimitedItemsByName = (
         mintReleaseDate: items[name].mintReleaseDate || 0,
       };
     }
-    console.log("    limitedItems[name] ", name, limitedItems[name]);
+    // console.log("    limitedItems[name] ", name, limitedItems[name]);
     return limitedItems;
     // TODO: FIX TYPE
   }, {} as Record<CraftableName, LimitedItem>);

@@ -237,3 +237,4 @@ export const KNOWN_ITEMS: Record<string, InventoryItemName> = Object.assign(
 );
 
 export const IDS = Object.values(KNOWN_IDS);
+// export const AllIds = Object.keys(InventoryItemName);

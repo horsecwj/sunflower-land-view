@@ -75,6 +75,7 @@ export class Inventory {
       IDS.length,
       farmAddress
     );
+    //    batchBalances[i] = balanceOf(accounts[i], ids[i]);
     const batchAccounts = Array(IDS.length).fill(farmAddress);
     const balances = await this.contract.methods
       .balanceOfBatch(batchAccounts, IDS)

@@ -146,9 +146,13 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
   };
 
   const craft = async () => {
-    console.log("MINT", { item: selected.name, captcha: "" });
+    console.log("MINT", { item: selected.name, captcha: "", id: selected.id });
 
-    goblinService.send("MINT", { item: selected.name, captcha: "" });
+    goblinService.send("MINT", {
+      item: selected.name,
+      captcha: "",
+      id: selected.id,
+    });
     onClose();
   };
 
@@ -245,10 +249,8 @@ export const Rare: React.FC<Props> = ({ onClose, type, canCraft = true }) => {
     console.log("mintReleaseDate", mintReleaseDate);
 
     if (
-      mintReleaseDate &&
-      mintReleaseDate > currentDate
-      //   ||
-      // selected.disabled
+      (mintReleaseDate && mintReleaseDate > currentDate) ||
+      selected.disabled
     ) {
       return <span className="text-xs mt-2">Coming soon</span>;
     }

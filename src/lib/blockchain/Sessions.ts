@@ -277,16 +277,8 @@ export class SessionManager {
 
     await new Promise((resolve, reject) => {
       this.contract.methods
-        .mint(
-          signature,
-          sessionId,
-          nextSessionId,
-          deadline,
-          farmId,
-          mintId,
-          fee
-        )
-        .send({ from: this.account, value: fee, gasPrice })
+        .mint(signature, sessionId, deadline, farmId, mintId)
+        .send({ from: this.account, gasPrice })
         .on("error", function (error: any) {
           console.log({ error });
           const parsed = parseMetamaskError(error);
