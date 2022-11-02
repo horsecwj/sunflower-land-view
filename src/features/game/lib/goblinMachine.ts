@@ -182,7 +182,7 @@ export function startGoblinVillage(authContext: AuthContext) {
                 first: onChainState.game,
                 second: game,
               });
-
+              console.log("availableState", availableState);
               game.id = farmId;
               game.balance = availableState.balance;
               game.inventory = availableState.inventory;

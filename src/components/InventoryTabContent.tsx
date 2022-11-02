@@ -45,7 +45,7 @@ export const InventoryTabContent = ({
 }: Props) => {
   const [scrollIntoView] = useScrollIntoView();
   const inventoryCategories = getKeys(tabItems) as InventoryItemName[];
-
+  console.log("InventoryTabContent --- inventory", inventory);
   const inventoryMap = inventoryItems.reduce((acc, curr) => {
     const category = inventoryCategories.find(
       (category) => curr in tabItems[category].items

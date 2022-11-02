@@ -9,6 +9,11 @@ import {
 } from "../types/game";
 import { IDS, KNOWN_IDS } from "features/game/types";
 import { tokenMulNum } from "src/lib/config";
+import { toWei } from "web3-utils";
+import { getItemUnit } from "features/game/lib/conversion";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 /**
  * Converts API response into a game state
  */
@@ -251,6 +256,8 @@ export interface diffRes {
   decreaseNum: string[];
   decreaseNumNumber: number[];
   tokensString: string;
+  addNumString: string[];
+  decreaseString: string[];
 }
 export function diffGameInventory(
   newGameState: any,
@@ -263,7 +270,8 @@ export function diffGameInventory(
 
   const addNumNumber: number[] = [];
   const decreaseNumNumber: number[] = [];
-
+  const addNumString: string[] = [];
+  const decreaseString: string[] = [];
   const finalInventory = Object.keys(newGameState.inventory).reduce(
     (items, item) => ({
       ...items,
@@ -277,6 +285,7 @@ export function diffGameInventory(
     .sub(new Decimal(oldGameState.balance | 0))
     .mul(tokenMulNum)
     .toString();
+  const tokensFinal = toWei(tokens, "ether");
   console.log("balance diff ", tokens);
   console.log(finalInventory);
   const keyList = Object.keys(finalInventory);
@@ -285,32 +294,34 @@ export function diffGameInventory(
   //
   const keyList_KNOWN_IDS = Object.keys(KNOWN_IDS);
   const tempKownIds: number[] = [];
-  const tempKownIdsNumb: number[] = [];
+  const tempKownIdsNumb: string[] = [];
 
   for (const tmp in keyList_KNOWN_IDS) {
     const keyValue = keyList_KNOWN_IDS[tmp];
     tempKownIds.push(KNOWN_IDS[keyValue as InventoryItemName]);
-    tempKownIdsNumb.push(100000000);
+    const tempNum = BigInt(100);
+    tempKownIdsNumb.push(tempNum.toString());
   }
   console.log("transFormTs konwIds");
   console.log(JSON.stringify(tempKownIds));
-  console.log(JSON.stringify(tempKownIdsNumb));
   console.log(JSON.stringify(IDS));
-
-  //
-
   console.log("tempKownIds ---- \n", tempKownIds, "\n----------");
   for (const name in keyList) {
     const keyValue = keyList[name];
     const ids = KNOWN_IDS[keyValue as InventoryItemName];
-    console.log("name,ids,", keyValue, ids);
 
     const resNum = finalInventory[keyValue as InventoryItemName].comparedTo(0);
+    const unit = getItemUnit(keyValue as InventoryItemName);
+    // console.log("name,ids,", keyValue, ids, unit);
+
     if (resNum == 1) {
       addIndex.push(ids);
       addNum.push(finalInventory[keyValue as InventoryItemName].toString());
       addNumNumber.push(
         Number(finalInventory[keyValue as InventoryItemName].toString())
+      );
+      addNumString.push(
+        toWei(finalInventory[keyValue as InventoryItemName].toString(), unit)
       );
     }
     if (resNum == -1) {
@@ -320,6 +331,12 @@ export function diffGameInventory(
       );
       decreaseNumNumber.push(
         Number(finalInventory[keyValue as InventoryItemName].abs().toString())
+      );
+      decreaseString.push(
+        toWei(
+          finalInventory[keyValue as InventoryItemName].abs().toString(),
+          unit
+        )
       );
     }
   }
@@ -332,6 +349,8 @@ export function diffGameInventory(
     addNumNumber,
     decreaseNumNumber,
     tokensString: tokens,
+    addNumString,
+    decreaseString,
   };
 }
 export function updateGame(
@@ -404,13 +423,23 @@ export function getLowestGameState({
       ...(Object.keys(second.inventory) as InventoryItemName[]),
     ]),
   ];
-
+  console.log("getLowestGameState", getLowestGameState);
   const inventory: Inventory = items.reduce((inv, name) => {
     const firstAmount = first.inventory[name] || new Decimal(0);
     const secondAmount = second.inventory[name] || new Decimal(0);
-
-    const amount = firstAmount.lt(secondAmount) ? firstAmount : secondAmount;
-
+    const amount1 = firstAmount.eq(0) ? secondAmount : firstAmount;
+    const amount2 = firstAmount.lt(secondAmount) ? firstAmount : secondAmount;
+    const amount = amount1.eq(0) ? amount2 : amount1;
+    // console.log(
+    //   "name",
+    //   name,
+    //   "amouont1",
+    //   amount1,
+    //   "amount2",
+    //   amount2,
+    //   "amount",
+    //   amount
+    // );
     if (amount.eq(0)) {
       return inv;
     }

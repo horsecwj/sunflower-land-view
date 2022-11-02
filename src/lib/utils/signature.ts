@@ -168,9 +168,9 @@ export type syncSessionArgs = {
 
   farmId: number;
   mintIds: number[];
-  mintAmounts: number[];
+  mintAmounts: number[] | string[];
   burnIds: number[];
-  burnAmounts: number[];
+  burnAmounts: number[] | string[];
   tokens: number;
 };
 export type WishArgs = {

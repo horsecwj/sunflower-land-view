@@ -25,7 +25,7 @@ import { CollectibleName, LimitedItemName } from "../types/craftables";
 import { sync } from "../actions/sync";
 import { getOnChainState } from "../actions/onchain";
 import { ErrorCode, ERRORS } from "lib/errors";
-import { updateGame } from "./transforms";
+import { getLowestGameState, updateGame } from "./transforms";
 import { getFingerPrint } from "./botDetection";
 import { SkillName } from "../types/skills";
 import { levelUp } from "../actions/levelUp";
@@ -271,11 +271,7 @@ export function startGame(authContext: Options) {
             src: async (context) => {
               const farmId = authContext.farmId as number;
               console.log("i am in game loading,famrId-", farmId);
-              const {
-                game: onChain,
-                owner,
-                bumpkin,
-              } = await getOnChainState({
+              const onChainState = await getOnChainState({
                 farmAddress: authContext.address as string,
                 id: farmId,
               });
@@ -284,9 +280,11 @@ export function startGame(authContext: Options) {
                 farmAddress: authContext.address as string,
                 farmId: authContext.farmId as number,
               });
-              console.log("onChain", onChain);
+              const onChain = onChainState.game;
+              const owner = onChainState.owner;
+              console.log("onChainonChain", onChain);
               console.log(",owner, ", owner);
-              console.log(" bumpkin, ", bumpkin);
+              console.log(" bumpkin, ", onChainState.bumpkin);
               console.log(" onChainEvents", onChainEvents);
               // Get sessionId
               const sessionId =
@@ -299,7 +297,7 @@ export function startGame(authContext: Options) {
 
                 const response = await loadSession({
                   farmId,
-                  bumpkinTokenUri: bumpkin?.tokenURI,
+                  bumpkinTokenUri: onChainState.bumpkin?.tokenURI,
                   sessionId,
                   token: authContext.rawToken as string,
                 });
@@ -315,6 +313,7 @@ export function startGame(authContext: Options) {
                   itemsMintedAt,
                   deviceTrackerId,
                   status,
+                  flag,
                 } = response;
                 console.log(
                   "game, offset, whitelistedAt, itemsMintedAt",
@@ -325,8 +324,20 @@ export function startGame(authContext: Options) {
                   deviceTrackerId,
                   status
                 );
-
+                // Show whatever is lower, on chain or offchain
+                // const availableState = getLowestGameState({
+                //   first: onChain.game,
+                //   second: game,
+                // });
                 // add farm address
+                if (!flag) {
+                  const availableState = getLowestGameState({
+                    first: onChain,
+                    second: game,
+                  });
+                  game.inventory = availableState.inventory;
+                }
+
                 game.farmAddress = authContext.address;
 
                 return {

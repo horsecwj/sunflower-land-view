@@ -75,7 +75,13 @@ export async function sync({
     addNumNumber,
     decreaseNumNumber,
     tokensString,
+    addNumString,
+    decreaseString,
   } = dirrRess;
+  console.log("addNumString", addNumString);
+  console.log("addNumNumber", addNumNumber);
+  console.log("decreaseString", decreaseString);
+  console.log("decreaseNumNumber", decreaseNumNumber);
 
   // addIndex = [601, 301];
   // addNum = ["2", "3"];
@@ -113,9 +119,9 @@ export async function sync({
     deadline: validDeadline,
     farmId,
     mintIds: addIndex,
-    mintAmounts: addNumNumber,
+    mintAmounts: addNumString,
     burnIds: decrease,
-    burnAmounts: decreaseNumNumber,
+    burnAmounts: decreaseString,
     tokens: Number(tokensString),
   };
   console.log("args", args);

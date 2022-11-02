@@ -26,6 +26,7 @@ type Response = {
   blacklistStatus?: "investigating" | "permanent";
   deviceTrackerId: string;
   status?: "COOL_DOWN";
+  flag?: boolean;
 };
 
 const API_URL = CONFIG.API_URL;
@@ -263,6 +264,7 @@ export async function loadSession(
     blacklistStatus,
     deviceTrackerId,
     status,
+    flag,
   };
 }
 
