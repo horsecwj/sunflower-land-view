@@ -286,7 +286,7 @@ export function diffGameInventory(
     .mul(tokenMulNum)
     .toString();
   const tokensFinal = toWei(tokens, "ether");
-  console.log("balance diff ", tokens);
+  console.log("balance diff ", tokensFinal);
   console.log(finalInventory);
   const keyList = Object.keys(finalInventory);
   console.log("keyList", keyList);
@@ -348,7 +348,7 @@ export function diffGameInventory(
     decreaseNum,
     addNumNumber,
     decreaseNumNumber,
-    tokensString: tokens,
+    tokensString: tokensFinal,
     addNumString,
     decreaseString,
   };

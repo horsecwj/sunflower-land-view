@@ -31,7 +31,7 @@ export function pickSide({ state, action }: Options): GameState {
 
   const warBanner =
     action.side === WarSide.Goblin ? "Goblin War Banner" : "Human War Banner";
-
+  console.log("warBanner", warBanner);
   return {
     ...stateCopy,
     inventory: {

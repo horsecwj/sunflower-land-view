@@ -435,7 +435,7 @@ export const INITIAL_EXPANSIONS: LandExpansion[] = [
         width: 2,
       },
     },
-
+    // merchant
     fruitPatches: {
       0: {
         height: 2,
@@ -511,7 +511,7 @@ export const INITIAL_FARM: GameState = {
     "Iron Pickaxe": new Decimal(5),
     "Trading Ticket": new Decimal(50),
     "Chef Hat": new Decimal(1),
-    "Human War Banner": new Decimal(1),
+    // "Human War Banner": new Decimal(1),
     Warrior: new Decimal(1),
     "Boiled Egg": new Decimal(3),
     "Mashed Potato": new Decimal(1),
@@ -580,7 +580,7 @@ export const INITIAL_FARM: GameState = {
       },
     ],
   },
-  bumpkin: INITIAL_BUMPKIN,
+  // bumpkin: INITIAL_BUMPKIN,
 
   grubShop: {
     opensAt: new Date("2022-10-05").getTime(),

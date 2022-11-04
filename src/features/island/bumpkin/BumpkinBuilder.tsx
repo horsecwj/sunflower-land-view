@@ -152,6 +152,7 @@ export const BumpkinBuilder: React.FC = () => {
       hair: bumpkinParts.hair,
       shirt: bumpkinParts.shirt,
     };
+    console.log("parts", parts);
     gameService.send("MINT_BUMPKIN", { parts });
   };
 

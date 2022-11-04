@@ -299,7 +299,6 @@ export class SessionManager {
   public async withdraw({
     signature,
     sessionId,
-    nextSessionId,
     deadline,
     farmId,
     ids,
@@ -309,12 +308,11 @@ export class SessionManager {
   }: {
     signature: string;
     sessionId: string;
-    nextSessionId: string;
     deadline: number;
     // Data
     farmId: number;
     ids: number[];
-    amounts: number[];
+    amounts: string[];
     sfl: number;
     tax: number;
   }): Promise<string> {
@@ -326,7 +324,6 @@ export class SessionManager {
         .withdraw(
           signature,
           sessionId,
-          nextSessionId,
           deadline,
           farmId,
           ids,

@@ -35,7 +35,7 @@ export async function mintBumpkin({ bumpkinParts, token, farmId }: Options) {
       bumpkinParts,
     }),
   });
-
+  console.log(bumpkinParts);
   if (response.status === 429) {
     throw new Error(ERRORS.TOO_MANY_REQUESTS);
   }
@@ -43,9 +43,20 @@ export async function mintBumpkin({ bumpkinParts, token, farmId }: Options) {
   if (response.status >= 400) {
     throw new Error(ERRORS.FAILED_REQUEST);
   }
-
+  const args: Response = {
+    payload: {
+      deadline: 10000000000000,
+      farmId: farmId,
+      fee: "0",
+      itemIds: [],
+      sender: "",
+      tokenUri: "cwj.html",
+    },
+    signature:
+      "0x7fc46024c66e4abacd4b7f866c890f4b0921a0262d1efc3452723718b06bf2b04a0294a8362b6934f06711cbcd2c34767b9d7f1ee5d71de96f8e2f6fbb8c24361c",
+  };
   const transaction: Response = await response.json();
-
+  console.log("mintBumpkin transaction ");
   await metamask.getBumpkinMinter().createBumpkin({
     signature: transaction.signature,
     deadline: transaction.payload.deadline,

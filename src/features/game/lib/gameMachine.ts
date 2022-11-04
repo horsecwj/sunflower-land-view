@@ -294,7 +294,7 @@ export function startGame(authContext: Options) {
               // Load the farm session ,
               if (sessionId) {
                 const fingerprint = await getFingerPrint();
-
+                console.log("onChainState.bumpkin?.tokenURI");
                 const response = await loadSession({
                   farmId,
                   bumpkinTokenUri: onChainState.bumpkin?.tokenURI,
@@ -376,6 +376,7 @@ export function startGame(authContext: Options) {
                 cond: (_, event) => {
                   console.log(
                     "noBumpkinFound",
+                    event.data?.state.bumpkin,
                     !event.data?.state.bumpkin &&
                       window.location.hash.includes("/land")
                   );
@@ -405,7 +406,7 @@ export function startGame(authContext: Options) {
           on: {
             MINT_BUMPKIN: {
               cond: (_, event) => {
-                console.log("noBumpkinFound");
+                console.log("i am in src : noBumpkinFound");
                 return true;
               },
               target: "mintingBumpkin",
@@ -431,9 +432,16 @@ export function startGame(authContext: Options) {
             ACKNOWLEDGE: [
               {
                 target: "noBumpkinFound",
-                cond: (context) =>
-                  !context.state.bumpkin &&
-                  window.location.hash.includes("/land"),
+                cond: (context) => {
+                  console.log(
+                    "i am in announcing and state is ",
+                    !context.state.bumpkin
+                  );
+                  return (
+                    !context.state.bumpkin &&
+                    window.location.hash.includes("/land")
+                  );
+                },
                 actions: [() => acknowledgeRead()],
               },
               {
@@ -668,6 +676,7 @@ export function startGame(authContext: Options) {
         mintingBumpkin: {
           invoke: {
             src: async (_, event) => {
+              console.log("i am in mintingBumpkin");
               await mintBumpkin({
                 farmId: Number(authContext.farmId),
                 token: authContext.rawToken as string,

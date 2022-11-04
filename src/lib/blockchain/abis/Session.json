@@ -722,7 +722,6 @@
     "inputs": [
       { "internalType": "bytes", "name": "signature", "type": "bytes" },
       { "internalType": "bytes32", "name": "sessionId", "type": "bytes32" },
-      { "internalType": "bytes32", "name": "nextSessionId", "type": "bytes32" },
       { "internalType": "uint256", "name": "deadline", "type": "uint256" },
       { "internalType": "uint256", "name": "farmId", "type": "uint256" },
       { "internalType": "uint256[]", "name": "ids", "type": "uint256[]" },

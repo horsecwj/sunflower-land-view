@@ -42,7 +42,7 @@ export const GoblinWar: React.FC = () => {
   if (!isReady) {
     return null;
   }
-
+  console.log("handlePickSide", hasPickedSide(inventory));
   if (!hasPickedSide(inventory)) {
     return <WarIntro onPickSide={handlePickSide} />;
   }
@@ -50,7 +50,7 @@ export const GoblinWar: React.FC = () => {
   const side = inventory["Goblin War Banner"]?.gt(0)
     ? WarSide.Goblin
     : WarSide.Human;
-
+  console.log(side);
   return (
     <>
       <WarCollection side={side} />

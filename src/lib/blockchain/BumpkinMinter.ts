@@ -56,11 +56,10 @@ export class BumpkinMinter {
     return new Promise((resolve, reject) => {
       this.contract.methods
         .mintBumpkin(signature, deadline, fee, farmId, partIds, tokenUri)
-        .send({ from: this.account, value: fee, gasPrice })
+        .send({ from: this.account, gasPrice })
         .on("error", function (error: any) {
           console.log({ error });
           const parsed = parseMetamaskError(error);
-
           reject(parsed);
         })
         .on("transactionHash", function (transactionHash: any) {
